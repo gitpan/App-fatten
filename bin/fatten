@@ -1,0 +1,101 @@
+#!/usr/bin/env perl
+
+use 5.010001;
+use strict;
+use warnings;
+
+use Perinci::CmdLine;
+
+our $VERSION = '0.01'; # VERSION
+
+Perinci::CmdLine->new(url => '/App/fatten/fatten')->run;
+
+#ABSTRACT: Pack your dependencies onto your script file
+#PODNAME: fatten
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+fatten - Pack your dependencies onto your script file
+
+=head1 VERSION
+
+version 0.01
+
+=head1 SYNOPSIS
+
+ # by default outputs to <INPUT>.packed
+ % fatten bin/script.pl
+
+ # some options (set target perl version, output, debug)
+ % fatten --perl-version v5.10.1 -o /tmp/script.pl --debug bin/script.pl
+
+ # see more options
+ % fatten --help
+
+=head1 DESCRIPTION
+
+B<fatten> uses L<App::FatPacker> to package a Perl script with its dependencies.
+B<fatten> simplifies the packing process, adds some nice defaults and options
+(like C<--strip> to strip module source files using L<Perl::Stipper>, or
+C<--use-prereq-scanner> instead of C<fatpack trace>). It has the same limitation
+as App::FatPacker's, in that currently it only pack .pm Perl module files and
+not XS modules or other extra stuffs like shared files, message catalogs
+(C<.mo>), etc.
+
+=head1 TODO/ISSUES
+
+=over
+
+=item * Has not checked minimum version of modules (if using Perl::PrereqScanner)
+
+=item * Hasn't handled the case of modules that are core in an earlier version of perl but become non-core in a later version
+
+=item * Cache Perl::PrereqScanner result
+
+=back
+
+=head1 SEE ALSO
+
+L<App::FatPacker>
+
+For producing free-standing Perl scripts/applications, there are other
+alternatives like L<PAR::Packer> (can also pack XS modules and compress the
+included files in a special archive, but with higher startup time and temporary
+directory to extract stuffs).
+
+L<Perl::Stripper>
+
+=head1 HOMEPAGE
+
+Please visit the project's homepage at L<https://metacpan.org/release/App-fatten>.
+
+=head1 SOURCE
+
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website L<https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten>
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
+=head1 AUTHOR
+
+Steven Haryanto <stevenharyanto@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2014 by Steven Haryanto.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

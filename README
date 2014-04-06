@@ -1,0 +1,122 @@
+NAME
+    App::fatten - Pack your dependencies onto your script file
+
+VERSION
+    version 0.01
+
+SYNOPSIS
+    This distribution provides command-line utility called fatten.
+
+FUNCTIONS
+  fatten(%args) -> [status, msg, result, meta]
+    Arguments ('*' denotes required arguments):
+
+    *   exclude_module_patterns => *array*
+
+        Regex patterns of modules to exclude.
+
+        When you don't want to include a pattern of modules, specify it
+        here. The regex will be matched against module name in the form
+        "Package/SubPkg.pm".
+
+    *   exclude_modules => *array*
+
+        Modules to exclude.
+
+        When you don't want to include a module, specify it here. Either
+        specify in the form of "Package::SubPkg" or "Package/SubPkg.pm".
+
+    *   include_modules => *array*
+
+        Modules to include.
+
+        When the tracing process fails to include a required module, you can
+        add it here. Either specify in the form of "Package::SubPkg" or
+        "Package/SubPkg.pm".
+
+    *   input_file* => *str*
+
+        Path to input file (script to be packed).
+
+    *   output_file => *str*
+
+        Path to output file, defaults to INPUT.packed.
+
+    *   perl_version => *str*
+
+        Perl version to target, defaults to current running version.
+
+    *   skip_not_found => *bool*
+
+        Instead of dying, skip modules that are not found.
+
+        Unless you explicitly set it, this option is automatically turned on
+        when you use "use_prereq_scanner".
+
+    *   strip => *bool* (default: 0)
+
+        Whether to strip included modules using Perl::Stripper.
+
+    *   use => *array*
+
+        Additional modules to "use".
+
+        Will be passed to "fatpack trace"'s "--use" option.
+
+    *   use_fatpack_trace => *bool* (default: 1)
+
+        Whether to use 'fatpack trace' to detect required modules.
+
+        "fatpack trace" uses "perl -c".
+
+    *   use_prereq_scanner => *bool* (default: 0)
+
+        Whether to use Perl::PrereqScanner to detect required modules.
+
+        Since fatpack uses "perl -c", it might miss a few modules. You can
+        add more modules manually via "include_modules" (or "use") or let
+        Perl::PrereqScanner does a static analysis of script/module source
+        code. This on the other hand is usually too aggressive, as it will
+        include modules in cases like this:
+
+            if ($some_feature_or_os) {
+                require Win32::Console::ANSI;
+            }
+
+        and you'll need to exclude some modules from being recursively
+        searched using "exclude_modules" or "exclude_module_patterns".
+
+    Return value:
+
+    Returns an enveloped result (an array).
+
+    First element (status) is an integer containing HTTP status code (200
+    means OK, 4xx caller error, 5xx function error). Second element (msg) is
+    a string containing error message, or 'OK' if status is 200. Third
+    element (result) is optional, the actual result. Fourth element (meta)
+    is called result metadata and is optional, a hash that contains extra
+    information.
+
+HOMEPAGE
+    Please visit the project's homepage at
+    <https://metacpan.org/release/App-fatten>.
+
+SOURCE
+    Source repository is at <https://github.com/sharyanto/perl-App-fatten>.
+
+BUGS
+    Please report any bugs or feature requests on the bugtracker website
+    <https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten>
+
+    When submitting a bug or request, please include a test-file or a patch
+    to an existing test-file that illustrates the bug or desired feature.
+
+AUTHOR
+    Steven Haryanto <stevenharyanto@gmail.com>
+
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2014 by Steven Haryanto.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+

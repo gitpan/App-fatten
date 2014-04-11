@@ -34,7 +34,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten
   homepage: https://metacpan.org/release/App-fatten
   repository: git://github.com/sharyanto/perl-App-fatten.git
-version: '0.02'
+version: '0.03'
 x_Dist_Zilla:
   perl:
     version: '5.018002'

@@ -65,7 +65,7 @@
          "web" : "https://github.com/sharyanto/perl-App-fatten"
       }
    },
-   "version" : "0.02",
+   "version" : "0.03",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"

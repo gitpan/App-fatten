@@ -2,7 +2,7 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    version 0.02
+    version 0.03
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.

@@ -24,7 +24,7 @@ use version;
 
 sub _sq { shell_quote($_[0]) }
 
-our $VERSION = '0.02'; # VERSION
+our $VERSION = '0.03'; # VERSION
 
 our %SPEC;
 
@@ -98,7 +98,7 @@ sub _build_lib {
             $log->debug("  Stripping $mpath --> $mod ...");
             my $src = slurp($mpath);
             my $stripped = $stripper->strip($src);
-            write_file($mod, $stripped);
+            write_file($modp, $stripped);
         } else {
             $log->debug("  Copying $mpath --> $mod ...");
             copy($mpath, $modp);
@@ -146,6 +146,7 @@ $SPEC{fatten} = {
             summary => 'Path to output file, defaults to `packed` in current directory',
             schema => ['str*'],
             cmdline_aliases => { o=>{} },
+            pos => 1,
         },
         include => {
             summary => 'Modules to include',
@@ -270,7 +271,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 

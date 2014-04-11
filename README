@@ -2,11 +2,12 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    version 0.03
+    version 0.04
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.
 
+  TODO
 FUNCTIONS
   fatten(%args) -> [status, msg, result, meta]
     Arguments ('*' denotes required arguments):
@@ -26,10 +27,19 @@ FUNCTIONS
 
     *   include => *array*
 
-        Modules to include.
+        Include extra modules.
 
         When the tracing process fails to include a required module, you can
         add it here.
+
+    *   include_dist => *array*
+
+        Include extra modules.
+
+        Just like the "include" option, but will include module as well as
+        other modules from the same distribution. Module name must be the
+        main module of the distribution. Will determine other modules from
+        the ".packlist" file.
 
     *   input_file* => *str*
 

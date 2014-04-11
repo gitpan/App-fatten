@@ -21,11 +21,13 @@ requires:
   App::tracepm: '0.04'
   File::Slurp::Shortcuts: '0'
   File::chdir: '0'
+  List::MoreUtils: '0'
   Log::Any: '0'
   Log::Any::For::Builtins: '0'
   Module::Path: '0'
   Perinci::CmdLine: '0'
   Perl::Stripper: '0'
+  SHARYANTO::Dist::Util: '0.02'
   SHARYANTO::Proc::ChildError: '0'
   String::ShellQuote: '0'
   experimental: '0'
@@ -34,7 +36,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten
   homepage: https://metacpan.org/release/App-fatten
   repository: git://github.com/sharyanto/perl-App-fatten.git
-version: '0.03'
+version: '0.04'
 x_Dist_Zilla:
   perl:
     version: '5.018002'

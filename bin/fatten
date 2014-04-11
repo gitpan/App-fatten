@@ -6,7 +6,7 @@ use warnings;
 
 use Perinci::CmdLine;
 
-our $VERSION = '0.03'; # VERSION
+our $VERSION = '0.04'; # VERSION
 
 Perinci::CmdLine->new(url => '/App/fatten/fatten')->run;
 
@@ -25,15 +25,15 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
- # by default outputs to <INPUT>.packed
+ # by default outputs to 'packed' in the current directory
  % fatten bin/script.pl
 
- # some options (set target perl version, output, debug)
- % fatten --perl-version v5.10.1 -o /tmp/script.pl --debug bin/script.pl
+ # some options (set debug, set target perl version, add some modules, set output)
+ % fatten --debug -V 5.10.1 -I Foo::Bar -I Baz script.pl script.pl.packed
 
  # see more options
  % fatten --help
@@ -51,7 +51,7 @@ Currently B<fatten> ignores C<fatlib/> and XS modules. It only focuses on
 creating free-standing Perl script which depends on pure-Perl modules (C<.pm>
 files) only. Including C<fatlib/> to a stand-alone script will require an
 approach like L<PAR::Archive> (i.e. bundling the required files in an archive
-and extracting the required files on the temporary directory).
+and extracting the required files into a temporary directory).
 
 By default B<fatten> skips core modules.
 

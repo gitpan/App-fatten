@@ -25,22 +25,23 @@ use version;
 
 sub _sq { shell_quote($_[0]) }
 
-our $VERSION = '0.04'; # VERSION
+our $VERSION = '0.05'; # VERSION
 
 our %SPEC;
 
 sub _trace {
     my $self = shift;
 
+    $log->debugf("  Tracing with method '%s' ...", $self->{trace_method});
     my $res = App::tracepm::tracepm(
         method => $self->{trace_method},
         script => $self->{input_file},
         use => $self->{use},
-        recurse_exclude_core => 1,
+        recurse_exclude_core => $self->{exclude_core} ? 1:0,
         recurse_exclude_xs   => 1,
         detail => 1,
 
-        core => 0,
+        core => $self->{exclude_core} ? 0 : undef,
         xs   => 0,
     );
     die "Can't trace: $res->[0] - $res->[1]" unless $res->[0] == 200;
@@ -60,15 +61,25 @@ sub _build_lib {
     my @mods; # modules to add
 
     my $deps = $self->{deps};
-    push @mods, (map {$_->{module}} grep {!$_->{is_core} && !$_->{is_xs}} @$deps);
+    for (@$deps) {
+        next if $_->{is_core} && $self->{exclude_core};
+        next if $_->{is_xs};
+        $log->debugf("  Adding module: %s (traced)", $_->{module});
+        push @mods, $_->{module};
+    }
 
-    push @mods, @{ $self->{include} // [] };
+    for (@{ $self->{include} // [] }) {
+        $log->debugf("  Adding module: %s (included)", $_);
+        push @mods, $_;
+    }
 
     for (@{ $self->{include_dist} // [] }) {
         my @distmods = list_dist_modules($_);
         if (@distmods) {
+            $log->debugf("  Adding modules: %s (included dist)", join(", ", @distmods));
             push @mods, @distmods;
         } else {
+            $log->debugf("  Adding module: %s (included dist, but can't find other modules)", $_);
             push @mods, $_;
         }
     }
@@ -107,12 +118,12 @@ sub _build_lib {
                 require Perl::Stripper;
                 Perl::Stripper->new;
             };
-            $log->debug("  Stripping $mpath --> $mod ...");
+            $log->debug("  Stripping $mpath --> $modp ...");
             my $src = slurp($mpath);
             my $stripped = $stripper->strip($src);
             write_file($modp, $stripped);
         } else {
-            $log->debug("  Copying $mpath --> $mod ...");
+            $log->debug("  Copying $mpath --> $modp ...");
             copy($mpath, $modp);
         }
 
@@ -203,6 +214,10 @@ _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { p => {} },
         },
+        exclude_core => {
+            summary => 'Whether to exclude core modules',
+            schema => ['bool' => default => 1],
+        },
         perl_version => {
             summary => 'Perl version to target, defaults to current running version',
             schema => ['str*'],
@@ -221,6 +236,7 @@ The default is `fatpacker`, which is the same as what `fatpack trace` does.
 There are other methods available, please see `App::tracepm` for more details.
 
 _
+            cmdline_aliases => { t=>{} },
         },
         use => {
             summary => 'Additional modules to "use"',
@@ -238,6 +254,10 @@ _
             cmdline_aliases => { s=>{} },
         },
         # XXX strip_opts
+        debug_keep_tempdir => {
+            summary => 'Keep temporary directory for debugging',
+            schema => ['bool' => default=>0],
+        },
     },
     deps => {
         exec => 'fatpack',
@@ -247,7 +267,7 @@ sub fatten {
     my %args = @_;
     my $self = __PACKAGE__->new(%args);
 
-    my $tempdir = tempdir(CLEANUP => 1);
+    my $tempdir = tempdir(CLEANUP => 0);
     $log->debugf("Created tempdir %s", $tempdir);
     $self->{tempdir} = $tempdir;
 
@@ -277,6 +297,13 @@ sub fatten {
     $log->infof("Packing ...");
     $self->_pack;
 
+    if ($self->{debug_keep_tempdir}) {
+        $log->infof("Keeping tempdir %s for debugging", $tempdir);
+    } else {
+        $log->debugf("Deleting tempdir %s ...", $tempdir);
+        remove_tree($tempdir);
+    }
+
     [200];
 }
 
@@ -295,7 +322,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -316,11 +343,19 @@ Arguments ('*' denotes required arguments):
 
 =over 4
 
+=item * B<debug_keep_tempdir> => I<bool> (default: 0)
+
+Keep temporary directory for debugging.
+
 =item * B<exclude> => I<array>
 
 Modules to exclude.
 
 When you don't want to include a module, specify it here.
+
+=item * B<exclude_core> => I<bool> (default: 1)
+
+Whether to exclude core modules.
 
 =item * B<exclude_pattern> => I<array>
 

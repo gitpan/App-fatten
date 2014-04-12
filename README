@@ -2,7 +2,7 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    version 0.04
+    version 0.05
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.
@@ -12,11 +12,19 @@ FUNCTIONS
   fatten(%args) -> [status, msg, result, meta]
     Arguments ('*' denotes required arguments):
 
+    *   debug_keep_tempdir => *bool* (default: 0)
+
+        Keep temporary directory for debugging.
+
     *   exclude => *array*
 
         Modules to exclude.
 
         When you don't want to include a module, specify it here.
+
+    *   exclude_core => *bool* (default: 1)
+
+        Whether to exclude core modules.
 
     *   exclude_pattern => *array*
 

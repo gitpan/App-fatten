@@ -12,20 +12,20 @@ use Cwd qw(abs_path);
 use File::chdir;
 use File::Copy;
 use File::Path qw(make_path remove_tree);
-use File::Slurp::Shortcuts qw(slurp slurp_c write_file);
+use File::Slurp::Tiny qw(write_file);
 use File::Temp qw(tempfile tempdir);
 use List::MoreUtils qw(uniq);
 use List::Util qw(first);
 use Log::Any::For::Builtins qw(system my_qx);
 use Module::Path qw(module_path);
+use Proc::ChildError qw(explain_child_error);
 use SHARYANTO::Dist::Util qw(list_dist_modules);
-use SHARYANTO::Proc::ChildError qw(explain_child_error);
 use String::ShellQuote;
 use version;
 
 sub _sq { shell_quote($_[0]) }
 
-our $VERSION = '0.05'; # VERSION
+our $VERSION = '0.06'; # VERSION
 
 our %SPEC;
 
@@ -119,7 +119,7 @@ sub _build_lib {
                 Perl::Stripper->new;
             };
             $log->debug("  Stripping $mpath --> $modp ...");
-            my $src = slurp($mpath);
+            my $src = read_file($mpath);
             my $stripped = $stripper->strip($src);
             write_file($modp, $stripped);
         } else {
@@ -322,7 +322,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-version 0.05
+This document describes version 0.06 of App::fatten (from Perl distribution App-fatten), released on 2014-05-17.
 
 =head1 SYNOPSIS
 

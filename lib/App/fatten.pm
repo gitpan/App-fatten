@@ -25,7 +25,7 @@ use version;
 
 sub _sq { shell_quote($_[0]) }
 
-our $VERSION = '0.06'; # VERSION
+our $VERSION = '0.07'; # VERSION
 
 our %SPEC;
 
@@ -322,7 +322,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.06 of App::fatten (from Perl distribution App-fatten), released on 2014-05-17.
+This document describes version 0.07 of App::fatten (from Perl distribution App-fatten), released on 2014-07-02.
 
 =head1 SYNOPSIS
 

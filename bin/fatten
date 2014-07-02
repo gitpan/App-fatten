@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!perl
 
 use 5.010001;
 use strict;
@@ -6,7 +6,7 @@ use warnings;
 
 use Perinci::CmdLine;
 
-our $VERSION = '0.06'; # VERSION
+our $VERSION = '0.07'; # VERSION
 
 Perinci::CmdLine->new(url => '/App/fatten/fatten')->run;
 
@@ -25,7 +25,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.06 of fatten (from Perl distribution App-fatten), released on 2014-05-17.
+This document describes version 0.07 of fatten (from Perl distribution App-fatten), released on 2014-07-02.
 
 =head1 SYNOPSIS
 

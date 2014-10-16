@@ -4,12 +4,13 @@ use warnings;
 
 # this test was generated with Dist::Zilla::Plugin::Test::Compile 2.040
 
-use Test::More  tests => 2 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
+use Test::More  tests => 3 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
 
 
 
 my @module_files = (
-    'App/fatten.pm'
+    'App/fatten.pm',
+    'Perinci/CmdLine/fatten.pm'
 );
 
 my @scripts = (

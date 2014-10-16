@@ -25,11 +25,14 @@ requires:
   Log::Any: '0'
   Log::Any::For::Builtins: '0'
   Module::Path: '0'
+  Moo: '0'
   Perinci::CmdLine: '0'
+  Perinci::CmdLine::Base: '0.33'
   Perl::Stripper: '0'
   Proc::ChildError: '0'
   Rinci: v1.1.0
   SHARYANTO::Dist::Util: '0.02'
+  SHARYANTO::File::Util: '0'
   String::ShellQuote: '0'
   experimental: '0'
   perl: '5.010001'
@@ -37,7 +40,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten
   homepage: https://metacpan.org/release/App-fatten
   repository: git://github.com/perlancar/perl-App-fatten.git
-version: '0.08'
+version: '0.09'
 x_Dist_Zilla:
   perl:
     version: '5.018002'

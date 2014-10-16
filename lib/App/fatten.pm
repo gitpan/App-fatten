@@ -1,7 +1,7 @@
 package App::fatten;
 
 our $DATE = '2014-10-16'; # DATE
-our $VERSION = '0.08'; # VERSION
+our $VERSION = '0.09'; # VERSION
 
 use 5.010001;
 use strict;
@@ -15,6 +15,7 @@ use Cwd qw(abs_path);
 use File::chdir;
 use File::Copy;
 use File::Path qw(make_path remove_tree);
+use File::Spec;
 use File::Slurp::Tiny qw(write_file read_file);
 use File::Temp qw(tempfile tempdir);
 use List::MoreUtils qw(uniq);
@@ -23,6 +24,7 @@ use Log::Any::For::Builtins qw(system my_qx);
 use Module::Path qw(module_path);
 use Proc::ChildError qw(explain_child_error);
 use SHARYANTO::Dist::Util qw(list_dist_modules);
+use SHARYANTO::File::Util qw(file_exists);
 use String::ShellQuote;
 use version;
 
@@ -147,6 +149,17 @@ sub _pack {
         _sq($self->{abs_output_file}),
     );
     die "Can't fatpack file: ".explain_child_error() if $?;
+
+    chmod 0755, $self->{abs_output_file};
+
+    # replace shebang line (which contains perl path used by fatpack) with a
+    # default system perl. perhaps make this configurable in the future.
+    {
+        my $ct = read_file($self->{abs_output_file});
+        $ct =~ s{\A#!(.+)}{#!/usr/bin/perl};
+        write_file($self->{abs_output_file}, $ct);
+    }
+
     $log->infof("  Produced %s (%.1f KB)",
                 $self->{abs_output_file}, (-s $self->{abs_output_file})/1024);
 }
@@ -160,14 +173,20 @@ $SPEC{fatten} = {
     v => 1.1,
     args => {
         input_file => {
-            summary => 'Path to input file (script to be packed)',
+            summary => 'Path to input file (script to be fatpacked)',
             schema => ['str*'],
             req => 1,
             pos => 0,
             cmdline_aliases => { i=>{} },
         },
         output_file => {
-            summary => 'Path to output file, defaults to `packed` in current directory',
+            summary => 'Path to output file, defaults to `<script>.fatpack` in source directory',
+            description => <<'_',
+
+If source directory happens to be unwritable by the script, will try
+`<script>.fatpack` in current directory. If that fails too, will die.
+
+_
             schema => ['str*'],
             cmdline_aliases => { o=>{} },
             pos => 1,
@@ -221,20 +240,29 @@ _
         },
         perl_version => {
             summary => 'Perl version to target, defaults to current running version',
+            description => <<'_',
+
+This is for determining which modules are considered core and should be skipped
+by default (when `exclude_core` option is enabled). Different perl versions have
+different sets of core modules as well as different versions of the modules.
+
+_
             schema => ['str*'],
             cmdline_aliases => { V=>{} },
         },
-        #overwrite => {
-        #    schema => [bool => default => 0],
-        #    summary => 'Whether to overwrite output if previously exists',
-        #},
+        overwrite => {
+            schema => [bool => default => 0],
+            summary => 'Whether to overwrite output if previously exists',
+        },
         trace_method => {
             summary => "Which method to use to trace dependencies",
             schema => ['str*', default => 'fatpacker'],
             description => <<'_',
 
 The default is `fatpacker`, which is the same as what `fatpack trace` does.
-There are other methods available, please see `App::tracepm` for more details.
+Different tracing methods have different pro's and con's, one method might
+detect required modules that another method does not, and vice versa. There are
+several methods available, please see `App::tracepm` for more details.
 
 _
             cmdline_aliases => { t=>{} },
@@ -281,13 +309,43 @@ sub fatten {
     $self->{perl_version} = version->parse($self->{perl_version});
     $log->debugf("Will be targetting perl %s", $self->{perl_version});
 
-    (-f $self->{input_file}) or die "No such input file: $self->{input_file}";
-    $self->{abs_input_file} = abs_path($self->{input_file})
-        or die "Can't find absolute path of input file $self->{input_file}";
+    (-f $self->{input_file})
+        or return [500, "No such input file: $self->{input_file}"];
+    $self->{abs_input_file} = abs_path($self->{input_file}) or return
+        [500, "Can't find absolute path of input file $self->{input_file}"];
 
-    $self->{output_file} //= "$CWD/packed";
-    $self->{abs_output_file} = abs_path($self->{output_file})
-        or die "Can't find absolute path of output file $self->{output_file}";
+    my $output_file;
+    {
+        $output_file = $self->{output_file};
+        if (defined $output_file) {
+            return [412, "Output file '$output_file' exists, won't overwrite (see --overwrite)"]
+                if file_exists($output_file) && !$self->{overwrite};
+            last if open my($fh), ">", $output_file;
+            return [500, "Can't write to output file '$output_file': $!"];
+        }
+
+        my ($vol, $dir, $file) = File::Spec->splitpath($self->{input_file});
+        my $fh;
+
+        # try <input>.fatpack in the source directory
+        $output_file = File::Spec->catpath($vol, $dir, "$file.fatpack");
+        return [412, "Output file '$output_file' exists, won't overwrite (see --overwrite)"]
+            if file_exists($output_file) && !$self->{overwrite};
+        last if open $fh, ">", $output_file;
+
+        # if failed, try <input>.fatpack in the current directory
+        $output_file = "$CWD/$file.fatpack";
+        return [412, "Output file '$output_file' exists, won't overwrite (see --overwrite)"]
+            if file_exists($output_file) && !$self->{overwrite};
+        last if open $fh, ">", $output_file;
+
+        # failed too, bail
+        return [500, "Can't write $file.fatpack in source- as well as ".
+                    "current directory: $!"];
+    }
+    $self->{output_file} = $output_file;
+    $self->{abs_output_file} = abs_path($output_file) or return
+        [500, "Can't find absolute path of output file '$self->{output_file}'"];
 
     $log->infof("Tracing dependencies ...");
     $self->_trace;
@@ -323,7 +381,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.08 of App::fatten (from Perl distribution App-fatten), released on 2014-10-16.
+This document describes version 0.09 of App::fatten (from Perl distribution App-fatten), released on 2014-10-16.
 
 =head1 SYNOPSIS
 
@@ -381,15 +439,26 @@ distribution. Will determine other modules from the C<.packlist> file.
 
 =item * B<input_file>* => I<str>
 
-Path to input file (script to be packed).
+Path to input file (script to be fatpacked).
 
 =item * B<output_file> => I<str>
 
-Path to output file, defaults to `packed` in current directory.
+Path to output file, defaults to `<script>.fatpack` in source directory.
+
+If source directory happens to be unwritable by the script, will try
+C<< E<lt>scriptE<gt>.fatpack >> in current directory. If that fails too, will die.
+
+=item * B<overwrite> => I<bool> (default: 0)
+
+Whether to overwrite output if previously exists.
 
 =item * B<perl_version> => I<str>
 
 Perl version to target, defaults to current running version.
+
+This is for determining which modules are considered core and should be skipped
+by default (when C<exclude_core> option is enabled). Different perl versions have
+different sets of core modules as well as different versions of the modules.
 
 =item * B<strip> => I<bool> (default: 0)
 
@@ -400,7 +469,9 @@ Whether to strip included modules using Perl::Stripper.
 Which method to use to trace dependencies.
 
 The default is C<fatpacker>, which is the same as what C<fatpack trace> does.
-There are other methods available, please see C<App::tracepm> for more details.
+Different tracing methods have different pro's and con's, one method might
+detect required modules that another method does not, and vice versa. There are
+several methods available, please see C<App::tracepm> for more details.
 
 =item * B<use> => I<array>
 

@@ -1,5 +1,8 @@
 package App::fatten;
 
+our $DATE = '2014-10-16'; # DATE
+our $VERSION = '0.08'; # VERSION
+
 use 5.010001;
 use strict;
 use warnings;
@@ -12,7 +15,7 @@ use Cwd qw(abs_path);
 use File::chdir;
 use File::Copy;
 use File::Path qw(make_path remove_tree);
-use File::Slurp::Tiny qw(write_file);
+use File::Slurp::Tiny qw(write_file read_file);
 use File::Temp qw(tempfile tempdir);
 use List::MoreUtils qw(uniq);
 use List::Util qw(first);
@@ -24,8 +27,6 @@ use String::ShellQuote;
 use version;
 
 sub _sq { shell_quote($_[0]) }
-
-our $VERSION = '0.07'; # VERSION
 
 our %SPEC;
 
@@ -322,7 +323,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.07 of App::fatten (from Perl distribution App-fatten), released on 2014-07-02.
+This document describes version 0.08 of App::fatten (from Perl distribution App-fatten), released on 2014-10-16.
 
 =head1 SYNOPSIS
 
@@ -421,6 +422,8 @@ First element (status) is an integer containing HTTP status code
 element (meta) is called result metadata and is optional, a hash
 that contains extra information.
 
+ (any)
+
 =for Pod::Coverage ^(new)$
 
 =head1 HOMEPAGE
@@ -429,7 +432,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
+Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
 
 =head1 BUGS
 
@@ -441,11 +444,11 @@ feature.
 
 =head1 AUTHOR
 
-Steven Haryanto <stevenharyanto@gmail.com>
+perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Steven Haryanto.
+This software is copyright (c) 2014 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

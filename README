@@ -2,8 +2,8 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.07 of App::fatten (from Perl
-    distribution App-fatten), released on 2014-07-02.
+    This document describes version 0.08 of App::fatten (from Perl
+    distribution App-fatten), released on 2014-10-16.
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.
@@ -93,12 +93,14 @@ FUNCTIONS
     is called result metadata and is optional, a hash that contains extra
     information.
 
+     (any)
+
 HOMEPAGE
     Please visit the project's homepage at
     <https://metacpan.org/release/App-fatten>.
 
 SOURCE
-    Source repository is at <https://github.com/sharyanto/perl-App-fatten>.
+    Source repository is at <https://github.com/perlancar/perl-App-fatten>.
 
 BUGS
     Please report any bugs or feature requests on the bugtracker website
@@ -108,10 +110,10 @@ BUGS
     to an existing test-file that illustrates the bug or desired feature.
 
 AUTHOR
-    Steven Haryanto <stevenharyanto@gmail.com>
+    perlancar <perlancar@cpan.org>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2014 by Steven Haryanto.
+    This software is copyright (c) 2014 by perlancar@cpan.org.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.

@@ -69,7 +69,7 @@
          "web" : "https://github.com/sharyanto/perl-App-fatten"
       }
    },
-   "version" : "0.11",
+   "version" : "0.12",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -178,7 +178,7 @@
          {
             "class" : "Dist::Zilla::Plugin::Rinci::InstallCompletion",
             "name" : "@Author::PERLANCAR/Rinci::InstallCompletion",
-            "version" : "0.01"
+            "version" : "0.02"
          },
          {
             "class" : "Dist::Zilla::Plugin::OurDate",

@@ -38,7 +38,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten
   homepage: https://metacpan.org/release/App-fatten
   repository: git://github.com/sharyanto/perl-App-fatten.git
-version: '0.11'
+version: '0.12'
 x_Dist_Zilla:
   perl:
     version: '5.018002'
@@ -125,7 +125,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::Rinci::InstallCompletion
       name: '@Author::PERLANCAR/Rinci::InstallCompletion'
-      version: '0.01'
+      version: '0.02'
     -
       class: Dist::Zilla::Plugin::OurDate
       name: '@Author::PERLANCAR/OurDate'

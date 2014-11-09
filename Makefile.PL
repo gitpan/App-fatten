@@ -31,7 +31,6 @@ my %WriteMakefileArgs = (
     "Log::Any::For::Builtins" => 0,
     "Module::Path" => 0,
     "Perinci::CmdLine::Lite" => "0.46",
-    "Perl::Stripper" => 0,
     "Proc::ChildError" => 0,
     "Rinci" => "v1.1.0",
     "SHARYANTO::Dist::Util" => "0.02",
@@ -45,7 +44,7 @@ my %WriteMakefileArgs = (
     "IPC::Open3" => 0,
     "Test::More" => 0
   },
-  "VERSION" => "0.12",
+  "VERSION" => "0.13",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -65,7 +64,6 @@ my %FallbackPrereqs = (
   "Log::Any::For::Builtins" => 0,
   "Module::Path" => 0,
   "Perinci::CmdLine::Lite" => "0.46",
-  "Perl::Stripper" => 0,
   "Proc::ChildError" => 0,
   "Rinci" => "v1.1.0",
   "SHARYANTO::Dist::Util" => "0.02",

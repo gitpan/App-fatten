@@ -1,7 +1,7 @@
 package Perinci::CmdLine::fatten;
 
 our $DATE = '2014-11-10'; # DATE
-our $VERSION = '0.12'; # VERSION
+our $VERSION = '0.13'; # VERSION
 
 use 5.010;
 use parent qw(Perinci::CmdLine::Lite);
@@ -56,7 +56,7 @@ Perinci::CmdLine::fatten - Subclass of Perinci::CmdLine::Lite to set config_prof
 
 =head1 VERSION
 
-This document describes version 0.12 of Perinci::CmdLine::fatten (from Perl distribution App-fatten), released on 2014-11-10.
+This document describes version 0.13 of Perinci::CmdLine::fatten (from Perl distribution App-fatten), released on 2014-11-10.
 
 =head1 DESCRIPTION
 

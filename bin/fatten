@@ -1,7 +1,7 @@
 #!perl
 
 our $DATE = '2014-11-10'; # DATE
-our $VERSION = '0.12'; # VERSION
+our $VERSION = '0.13'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.12 of fatten (from Perl distribution App-fatten), released on 2014-11-10.
+This document describes version 0.13 of fatten (from Perl distribution App-fatten), released on 2014-11-10.
 
 =head1 SYNOPSIS
 
@@ -94,7 +94,9 @@ And, unlike B<fatpack>, you can specify modules to exclude as well.
 
 =item * Some extra options
 
-Like an option to strip the modules with L<Perl::Stripper>.
+Like an option to strip/squish the module source codes with L<Perl::Strip>
+(C<--strip>) or L<Perl::Stripper> (C<--stripper>) or L<Perl::Squish>
+(C<--squish>).
 
 =item * Configuration file support
 

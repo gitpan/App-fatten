@@ -26,7 +26,6 @@ requires:
   Log::Any::For::Builtins: '0'
   Module::Path: '0'
   Perinci::CmdLine::Lite: '0.46'
-  Perl::Stripper: '0'
   Proc::ChildError: '0'
   Rinci: v1.1.0
   SHARYANTO::Dist::Util: '0.02'
@@ -38,7 +37,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten
   homepage: https://metacpan.org/release/App-fatten
   repository: git://github.com/sharyanto/perl-App-fatten.git
-version: '0.12'
+version: '0.13'
 x_Dist_Zilla:
   perl:
     version: '5.018002'
@@ -271,6 +270,10 @@ x_Dist_Zilla:
           type: requires
       name: Prereqs
       version: '5.019'
+    -
+      class: Dist::Zilla::Plugin::Extras
+      name: 'lint-prereqs / assume-provided'
+      version: '0.01'
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':InstallModules'

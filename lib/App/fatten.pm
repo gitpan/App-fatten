@@ -1,7 +1,7 @@
 package App::fatten;
 
 our $DATE = '2014-11-10'; # DATE
-our $VERSION = '0.12'; # VERSION
+our $VERSION = '0.13'; # VERSION
 
 use 5.010001;
 use strict;
@@ -117,21 +117,33 @@ sub _build_lib {
             make_path($dir) unless -d $dir;
         }
 
-        if ($self->{strip}) {
+        if ($self->{stripper}) {
             my $stripper = do {
                 require Perl::Stripper;
                 Perl::Stripper->new(
-                    maintain_linum => 0,
-                    strip_ws       => $self->{strip_ws},
-                    strip_comment  => $self->{strip_comment},
-                    strip_pod      => $self->{strip_pod},
-                    strip_log      => $self->{strip_log},
+                    maintain_linum => $self->{stripper_maintain_linum},
+                    strip_ws       => $self->{stripper_ws},
+                    strip_comment  => $self->{stripper_comment},
+                    strip_pod      => $self->{stripper_pod},
+                    strip_log      => $self->{stripper_log},
                 );
             };
             $log->debug("  Stripping $mpath --> $modp ...");
             my $src = read_file($mpath);
             my $stripped = $stripper->strip($src);
             write_file($modp, $stripped);
+        } elsif ($self->{strip}) {
+            require Perl::Strip;
+            my $strip = Perl::Strip->new;
+            $log->debug("  Stripping $mpath --> $modp ...");
+            my $src = read_file($mpath);
+            my $stripped = $strip->strip($src);
+            write_file($modp, $stripped);
+        } elsif ($self->{squish}) {
+            $log->debug("  Squishing $mpath --> $modp ...");
+            require Perl::Squish;
+            my $squish = Perl::Squish->new;
+            $squish->file($mpath, $modp);
         } else {
             $log->debug("  Copying $mpath --> $modp ...");
             copy($mpath, $modp);
@@ -296,32 +308,41 @@ Will be passed to the tracer. Will currently only affect the `fatpacker` and
 _
         },
 
+        squish => {
+            summary => 'Whether to squish included modules using Perl::Squish',
+            schema => ['bool' => default=>0],
+        },
+
         strip => {
+            summary => 'Whether to strip included modules using Perl::Strip',
+            schema => ['bool' => default=>0],
+        },
+
+        stripper => {
             summary => 'Whether to strip included modules using Perl::Stripper',
             schema => ['bool' => default=>0],
-            cmdline_aliases => { s=>{} },
         },
-        strip_maintain_linum => {
+        stripper_maintain_linum => {
             summary => "Will be passed to Perl::Stripper's maintain_linum",
             schema => ['bool'],
             default => 0,
         },
-        strip_ws => {
+        stripper_ws => {
             summary => "Will be passed to Perl::Stripper's strip_ws",
             schema => ['bool'],
             default => 1,
         },
-        strip_comment => {
+        stripper_comment => {
             summary => "Will be passed to Perl::Stripper's strip_comment",
             schema => ['bool'],
             default => 1,
         },
-        strip_pod => {
+        stripper_pod => {
             summary => "Will be passed to Perl::Stripper's strip_pod",
             schema => ['bool'],
             default => 1,
         },
-        strip_log => {
+        stripper_log => {
             summary => "Will be passed to Perl::Stripper's strip_log",
             schema => ['bool'],
             default => 0,
@@ -450,7 +471,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.12 of App::fatten (from Perl distribution App-fatten), released on 2014-11-10.
+This document describes version 0.13 of App::fatten (from Perl distribution App-fatten), released on 2014-11-10.
 
 =head1 SYNOPSIS
 
@@ -538,27 +559,35 @@ This is for determining which modules are considered core and should be skipped
 by default (when C<exclude_core> option is enabled). Different perl versions have
 different sets of core modules as well as different versions of the modules.
 
+=item * B<squish> => I<bool> (default: 0)
+
+Whether to squish included modules using Perl::Squish.
+
 =item * B<strip> => I<bool> (default: 0)
+
+Whether to strip included modules using Perl::Strip.
+
+=item * B<stripper> => I<bool> (default: 0)
 
 Whether to strip included modules using Perl::Stripper.
 
-=item * B<strip_comment> => I<bool> (default: 1)
+=item * B<stripper_comment> => I<bool> (default: 1)
 
 Will be passed to Perl::Stripper's strip_comment.
 
-=item * B<strip_log> => I<bool> (default: 0)
+=item * B<stripper_log> => I<bool> (default: 0)
 
 Will be passed to Perl::Stripper's strip_log.
 
-=item * B<strip_maintain_linum> => I<bool> (default: 0)
+=item * B<stripper_maintain_linum> => I<bool> (default: 0)
 
 Will be passed to Perl::Stripper's maintain_linum.
 
-=item * B<strip_pod> => I<bool> (default: 1)
+=item * B<stripper_pod> => I<bool> (default: 1)
 
 Will be passed to Perl::Stripper's strip_pod.
 
-=item * B<strip_ws> => I<bool> (default: 1)
+=item * B<stripper_ws> => I<bool> (default: 1)
 
 Will be passed to Perl::Stripper's strip_ws.
 

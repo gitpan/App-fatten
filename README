@@ -2,7 +2,7 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.12 of App::fatten (from Perl
+    This document describes version 0.13 of App::fatten (from Perl
     distribution App-fatten), released on 2014-11-10.
 
 SYNOPSIS
@@ -84,27 +84,35 @@ FUNCTIONS
         Different perl versions have different sets of core modules as well
         as different versions of the modules.
 
+    *   squish => *bool* (default: 0)
+
+        Whether to squish included modules using Perl::Squish.
+
     *   strip => *bool* (default: 0)
+
+        Whether to strip included modules using Perl::Strip.
+
+    *   stripper => *bool* (default: 0)
 
         Whether to strip included modules using Perl::Stripper.
 
-    *   strip_comment => *bool* (default: 1)
+    *   stripper_comment => *bool* (default: 1)
 
         Will be passed to Perl::Stripper's strip_comment.
 
-    *   strip_log => *bool* (default: 0)
+    *   stripper_log => *bool* (default: 0)
 
         Will be passed to Perl::Stripper's strip_log.
 
-    *   strip_maintain_linum => *bool* (default: 0)
+    *   stripper_maintain_linum => *bool* (default: 0)
 
         Will be passed to Perl::Stripper's maintain_linum.
 
-    *   strip_pod => *bool* (default: 1)
+    *   stripper_pod => *bool* (default: 1)
 
         Will be passed to Perl::Stripper's strip_pod.
 
-    *   strip_ws => *bool* (default: 1)
+    *   stripper_ws => *bool* (default: 1)
 
         Will be passed to Perl::Stripper's strip_ws.
 

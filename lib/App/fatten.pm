@@ -1,7 +1,7 @@
 package App::fatten;
 
 our $DATE = '2014-11-09'; # DATE
-our $VERSION = '0.10'; # VERSION
+our $VERSION = '0.11'; # VERSION
 
 use 5.010001;
 use strict;
@@ -10,7 +10,6 @@ use experimental 'smartmatch';
 use Log::Any '$log';
 BEGIN { no warnings; $main::Log_Level = 'info' }
 
-use App::tracepm;
 use Cwd qw(abs_path);
 use File::chdir;
 use File::Copy;
@@ -33,6 +32,8 @@ sub _sq { shell_quote($_[0]) }
 our %SPEC;
 
 sub _trace {
+    require App::tracepm;
+
     my $self = shift;
 
     $log->debugf("  Tracing with method '%s' ...", $self->{trace_method});
@@ -175,17 +176,27 @@ $SPEC{fatten} = {
     args => {
         input_file => {
             summary => 'Path to input file (script to be fatpacked)',
+            description => <<'_',
+
+`-` (or if unspecified) means to take from standard input (internally, a
+temporary file will be created to handle this).
+
+_
             schema => ['str*'],
-            req => 1,
+            default => '-',
             pos => 0,
             cmdline_aliases => { i=>{} },
         },
         output_file => {
-            summary => 'Path to output file, defaults to `<script>.fatpack` in source directory',
+            summary => 'Path to output file',
             description => <<'_',
 
-If source directory happens to be unwritable by the script, will try
-`<script>.fatpack` in current directory. If that fails too, will die.
+If input is from stdin, then output defaults to stdout. You can also specify
+stdout by using `-`.
+
+Otherwise, defaults to `<script>.fatpack` in source directory. If source
+directory happens to be unwritable by the script, will try `<script>.fatpack` in
+current directory. If that fails too, will die.
 
 _
             schema => ['str*'],
@@ -310,19 +321,33 @@ sub fatten {
     $self->{perl_version} = version->parse($self->{perl_version});
     $log->debugf("Will be targetting perl %s", $self->{perl_version});
 
-    (-f $self->{input_file})
-        or return [500, "No such input file: $self->{input_file}"];
-    $self->{abs_input_file} = abs_path($self->{input_file}) or return
-        [500, "Can't find absolute path of input file $self->{input_file}"];
+    if ($self->{input_file} eq '-') {
+        $self->{input_file_is_stdin} = 1;
+        $self->{input_file} = $self->{abs_input_file} = (tempfile())[1];
+        open my($fh), ">", $self->{abs_input_file}
+            or return [500, "Can't write temporary input file '$self->{abs_input_file}': $!"];
+        local $_; while (<STDIN>) { print $fh $_ }
+        $self->{output_file} //= '-';
+    } else {
+        (-f $self->{input_file})
+            or return [500, "No such input file: $self->{input_file}"];
+        $self->{abs_input_file} = abs_path($self->{input_file}) or return
+            [500, "Can't find absolute path of input file $self->{input_file}"];
+    }
 
     my $output_file;
     {
         $output_file = $self->{output_file};
         if (defined $output_file) {
-            return [412, "Output file '$output_file' exists, won't overwrite (see --overwrite)"]
-                if file_exists($output_file) && !$self->{overwrite};
-            last if open my($fh), ">", $output_file;
-            return [500, "Can't write to output file '$output_file': $!"];
+            if ($output_file eq '-') {
+                $self->{output_file_is_stdout} = 1;
+                $self->{output_file} = $self->{abs_output_file} = (tempfile())[1];
+            } else {
+                return [412, "Output file '$output_file' exists, won't overwrite (see --overwrite)"]
+                    if file_exists($output_file) && !$self->{overwrite};
+                last if open my($fh), ">", $output_file;
+                return [500, "Can't write to output file '$output_file': $!"];
+            }
         }
 
         my ($vol, $dir, $file) = File::Spec->splitpath($self->{input_file});
@@ -345,7 +370,7 @@ sub fatten {
                     "current directory: $!"];
     }
     $self->{output_file} = $output_file;
-    $self->{abs_output_file} = abs_path($output_file) or return
+    $self->{abs_output_file} //= abs_path($output_file) or return
         [500, "Can't find absolute path of output file '$self->{output_file}'"];
 
     $log->infof("Tracing dependencies ...");
@@ -362,6 +387,16 @@ sub fatten {
     } else {
         $log->debugf("Deleting tempdir %s ...", $tempdir);
         remove_tree($tempdir);
+    }
+
+    if ($self->{input_file_is_stdin}) {
+        unlink $self->{abs_input_file};
+    }
+    if ($self->{output_file_is_stdout}) {
+        open my($fh), "<", $self->{abs_output_file}
+            or return [500, "Can't open temporary output file '$self->{abs_output_file}': $!"];
+        local $_; print while <$fh>; close $fh;
+        unlink $self->{abs_output_file};
     }
 
     [200];
@@ -382,7 +417,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.10 of App::fatten (from Perl distribution App-fatten), released on 2014-11-09.
+This document describes version 0.11 of App::fatten (from Perl distribution App-fatten), released on 2014-11-09.
 
 =head1 SYNOPSIS
 
@@ -440,16 +475,23 @@ Just like the C<include> option, but will include module as well as other module
 from the same distribution. Module name must be the main module of the
 distribution. Will determine other modules from the C<.packlist> file.
 
-=item * B<input_file>* => I<str>
+=item * B<input_file> => I<str> (default: "-")
 
 Path to input file (script to be fatpacked).
 
+C<-> (or if unspecified) means to take from standard input (internally, a
+temporary file will be created to handle this).
+
 =item * B<output_file> => I<str>
 
-Path to output file, defaults to `<script>.fatpack` in source directory.
+Path to output file.
 
-If source directory happens to be unwritable by the script, will try
-C<< E<lt>scriptE<gt>.fatpack >> in current directory. If that fails too, will die.
+If input is from stdin, then output defaults to stdout. You can also specify
+stdout by using C<->.
+
+Otherwise, defaults to C<< E<lt>scriptE<gt>.fatpack >> in source directory. If source
+directory happens to be unwritable by the script, will try C<< E<lt>scriptE<gt>.fatpack >> in
+current directory. If that fails too, will die.
 
 =item * B<overwrite> => I<bool> (default: 0)
 

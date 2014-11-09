@@ -2,7 +2,7 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.10 of App::fatten (from Perl
+    This document describes version 0.11 of App::fatten (from Perl
     distribution App-fatten), released on 2014-11-09.
 
 SYNOPSIS
@@ -52,16 +52,22 @@ FUNCTIONS
         main module of the distribution. Will determine other modules from
         the ".packlist" file.
 
-    *   input_file* => *str*
+    *   input_file => *str* (default: "-")
 
         Path to input file (script to be fatpacked).
 
+        "-" (or if unspecified) means to take from standard input
+        (internally, a temporary file will be created to handle this).
+
     *   output_file => *str*
 
-        Path to output file, defaults to `<script>.fatpack` in source
-        directory.
+        Path to output file.
 
-        If source directory happens to be unwritable by the script, will try
+        If input is from stdin, then output defaults to stdout. You can also
+        specify stdout by using "-".
+
+        Otherwise, defaults to "<script>.fatpack" in source directory. If
+        source directory happens to be unwritable by the script, will try
         "<script>.fatpack" in current directory. If that fails too, will
         die.
 

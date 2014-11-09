@@ -1,7 +1,7 @@
 #!perl
 
 our $DATE = '2014-11-09'; # DATE
-our $VERSION = '0.10'; # VERSION
+our $VERSION = '0.11'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.10 of fatten (from Perl distribution App-fatten), released on 2014-11-09.
+This document describes version 0.11 of fatten (from Perl distribution App-fatten), released on 2014-11-09.
 
 =head1 SYNOPSIS
 

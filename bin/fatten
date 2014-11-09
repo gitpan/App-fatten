@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-10-16'; # DATE
-our $VERSION = '0.09'; # VERSION
+our $DATE = '2014-11-09'; # DATE
+our $VERSION = '0.10'; # VERSION
 
 use 5.010001;
 use strict;
@@ -9,7 +9,10 @@ use warnings;
 
 use Perinci::CmdLine::fatten;
 
-Perinci::CmdLine::fatten->new(url => '/App/fatten/fatten')->run;
+Perinci::CmdLine::fatten->new(
+    log => 1,
+    url => '/App/fatten/fatten',
+)->run;
 
 #ABSTRACT: Pack your dependencies onto your script file
 #PODNAME: fatten
@@ -26,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.09 of fatten (from Perl distribution App-fatten), released on 2014-10-16.
+This document describes version 0.10 of fatten (from Perl distribution App-fatten), released on 2014-11-09.
 
 =head1 SYNOPSIS
 
@@ -42,6 +45,9 @@ This document describes version 0.09 of fatten (from Perl distribution App-fatte
  % fatten --help
 
 =head1 DESCRIPTION
+
+ "Thank you for a freakin awesome app. Seriously, fatten is great! <3"
+ -- Paul J. Fenwick
 
 B<fatten> is an alternative command-line script for L<App::FatPacker>. I had a
 few problems when using the B<fatpack> script which comes with
@@ -116,7 +122,7 @@ C<parse-id-phone>. Or you can select a profile explicitly using
 C<--config-profile> option.
 
 The config parameters are command-line options. The short aliases are not
-recognized, use long names. Dashes (C<->)) becomes underscores (C<_>). See
+recognized, use long names. Dashes (C<->) becomes underscores (C<_>). See
 L<App::fatten> for known options/parameters.
 
 =head1 SEE ALSO
@@ -130,13 +136,25 @@ directory to extract stuffs).
 
 L<Perl::Stripper>
 
+=head1 BASH COMPLETION
+
+This script has bash completion capability.
+
+To activate bash completion for this script, put:
+
+ complete -C fatten fatten
+
+in your bash startup (e.g. C<~/.bashrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
+
+You can also install L<App::BashCompletionProg> which makes it easy to add completion for Perinci::CmdLine-based scripts. Just execute C<bash-completion-prog> and the C<complete> command will be added in your C<~/.bash-completion-prog>. Your next shell session will then recognize tab completion for the command.
+
 =head1 HOMEPAGE
 
 Please visit the project's homepage at L<https://metacpan.org/release/App-fatten>.
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 

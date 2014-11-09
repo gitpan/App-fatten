@@ -1,8 +1,16 @@
 Revision history for App-fatten
 
+0.10    2014-11-09 (PERLANCAR)
+
+	- No functional changes.
+
+	- Switch CLI script to using Perinci::CmdLine::Lite for faster
+	  startup.
+
+
 0.09    2014-10-16 (PERLANCAR)
 
-        - This release adds several conveniences turnkey fatpacking.
+        - This release adds several conveniences for turnkey fatpacking.
 
         - [Incompatible change] Change default of output_file to
           <source_dir>/<source>.fatpack, or <cwd>/<source>.fatpack if the first

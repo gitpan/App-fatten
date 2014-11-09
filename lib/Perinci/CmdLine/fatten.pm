@@ -1,14 +1,11 @@
 package Perinci::CmdLine::fatten;
 
-our $DATE = '2014-10-16'; # DATE
-our $VERSION = '0.09'; # VERSION
+our $DATE = '2014-11-09'; # DATE
+our $VERSION = '0.10'; # VERSION
 
 use 5.010;
 use Moo;
-extends 'Perinci::CmdLine';
-
-# we don't have our own color theme class
-sub color_theme_class_prefix { 'Perinci::CmdLine::ColorTheme' }
+extends 'Perinci::CmdLine::Lite';
 
 sub hook_before_read_config_file {
     my ($self, $r) = @_;
@@ -42,10 +39,11 @@ sub hook_before_read_config_file {
     require File::Spec;
     my ($vol, $dir, $name) = File::Spec->splitpath($input_file);
     $r->{config_profile} = $name;
+    $r->{ignore_missing_config_profile_section} = 1;
 }
 
 1;
-# ABSTRACT: Subclass of Perinci::CmdLine to set config_profile default
+# ABSTRACT: Subclass of Perinci::CmdLine::Lite to set config_profile default
 
 __END__
 
@@ -55,11 +53,11 @@ __END__
 
 =head1 NAME
 
-Perinci::CmdLine::fatten - Subclass of Perinci::CmdLine to set config_profile default
+Perinci::CmdLine::fatten - Subclass of Perinci::CmdLine::Lite to set config_profile default
 
 =head1 VERSION
 
-This document describes version 0.09 of Perinci::CmdLine::fatten (from Perl distribution App-fatten), released on 2014-10-16.
+This document describes version 0.10 of Perinci::CmdLine::fatten (from Perl distribution App-fatten), released on 2014-11-09.
 
 =head1 DESCRIPTION
 
@@ -72,7 +70,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 

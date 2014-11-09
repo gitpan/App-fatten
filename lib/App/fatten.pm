@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-10-16'; # DATE
-our $VERSION = '0.09'; # VERSION
+our $DATE = '2014-11-09'; # DATE
+our $VERSION = '0.10'; # VERSION
 
 use 5.010001;
 use strict;
@@ -171,6 +171,7 @@ sub new {
 
 $SPEC{fatten} = {
     v => 1.1,
+    summary => 'Pack your dependencies onto your script file',
     args => {
         input_file => {
             summary => 'Path to input file (script to be fatpacked)',
@@ -381,7 +382,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.09 of App::fatten (from Perl distribution App-fatten), released on 2014-10-16.
+This document describes version 0.10 of App::fatten (from Perl distribution App-fatten), released on 2014-11-09.
 
 =head1 SYNOPSIS
 
@@ -397,6 +398,8 @@ This distribution provides command-line utility called L<fatten>.
 
 
 =head2 fatten(%args) -> [status, msg, result, meta]
+
+Pack your dependencies onto your script file.
 
 Arguments ('*' denotes required arguments):
 
@@ -503,7 +506,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 

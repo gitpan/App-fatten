@@ -1,7 +1,7 @@
 package App::fatten;
 
 our $DATE = '2014-11-13'; # DATE
-our $VERSION = '0.14'; # VERSION
+our $VERSION = '0.15'; # VERSION
 
 use 5.010001;
 use strict;
@@ -40,6 +40,7 @@ sub _trace {
     my $res = App::tracepm::tracepm(
         method => $self->{trace_method},
         script => $self->{input_file},
+        args => $self->{args},
         use => $self->{use},
         recurse_exclude_core => $self->{exclude_core} ? 1:0,
         recurse_exclude_xs   => 1,
@@ -307,6 +308,23 @@ Will be passed to the tracer. Will currently only affect the `fatpacker` and
 
 _
         },
+        args => {
+            summary => 'Script arguments',
+            description => <<'_',
+
+Will be used when running your script, e.g. when `trace_method` is `require`.
+For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
+then you can either use:
+
+    % fatten script output --args --foo --args 2 --args "bar baz"
+
+or:
+
+    % fatten script output --args-json '["--foo",2,"bar baz"]'
+
+_
+            schema => ['array*' => of => 'str*'],
+        },
 
         squish => {
             summary => 'Whether to squish included modules using Perl::Squish',
@@ -472,7 +490,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.14 of App::fatten (from Perl distribution App-fatten), released on 2014-11-13.
+This document describes version 0.15 of App::fatten (from Perl distribution App-fatten), released on 2014-11-13.
 
 =head1 SYNOPSIS
 
@@ -494,6 +512,20 @@ Pack your dependencies onto your script file.
 Arguments ('*' denotes required arguments):
 
 =over 4
+
+=item * B<args> => I<array>
+
+Script arguments.
+
+Will be used when running your script, e.g. when C<trace_method> is C<require>.
+For example, if your script requires three arguments: C<--foo>, C<2>, C<"bar baz">
+then you can either use:
+
+ % fatten script output --args --foo --args 2 --args "bar baz"
+
+or:
+
+ % fatten script output --args-json '["--foo",2,"bar baz"]'
 
 =item * B<debug_keep_tempdir> => I<bool> (default: 0)
 

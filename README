@@ -2,7 +2,7 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.14 of App::fatten (from Perl
+    This document describes version 0.15 of App::fatten (from Perl
     distribution App-fatten), released on 2014-11-13.
 
 SYNOPSIS
@@ -14,6 +14,20 @@ FUNCTIONS
     Pack your dependencies onto your script file.
 
     Arguments ('*' denotes required arguments):
+
+    *   args => *array*
+
+        Script arguments.
+
+        Will be used when running your script, e.g. when "trace_method" is
+        "require". For example, if your script requires three arguments:
+        "--foo", 2, "bar baz" then you can either use:
+
+         % fatten script output --args --foo --args 2 --args "bar baz"
+
+        or:
+
+         % fatten script output --args-json '["--foo",2,"bar baz"]'
 
     *   debug_keep_tempdir => *bool* (default: 0)
 

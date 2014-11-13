@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-11-10'; # DATE
-our $VERSION = '0.13'; # VERSION
+our $DATE = '2014-11-13'; # DATE
+our $VERSION = '0.14'; # VERSION
 
 use 5.010001;
 use strict;
@@ -396,6 +396,7 @@ sub fatten {
             if ($output_file eq '-') {
                 $self->{output_file_is_stdout} = 1;
                 $self->{output_file} = $self->{abs_output_file} = (tempfile())[1];
+                last;
             } else {
                 return [412, "Output file '$output_file' exists, won't overwrite (see --overwrite)"]
                     if file_exists($output_file) && !$self->{overwrite};
@@ -471,7 +472,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.13 of App::fatten (from Perl distribution App-fatten), released on 2014-11-10.
+This document describes version 0.14 of App::fatten (from Perl distribution App-fatten), released on 2014-11-13.
 
 =head1 SYNOPSIS
 
@@ -630,7 +631,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
+Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
 
 =head1 BUGS
 

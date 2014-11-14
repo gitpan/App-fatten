@@ -2,8 +2,8 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.15 of App::fatten (from Perl
-    distribution App-fatten), released on 2014-11-13.
+    This document describes version 0.16 of App::fatten (from Perl
+    distribution App-fatten), released on 2014-11-14.
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.
@@ -97,6 +97,10 @@ FUNCTIONS
         be skipped by default (when "exclude_core" option is enabled).
         Different perl versions have different sets of core modules as well
         as different versions of the modules.
+
+    *   shebang => *str* (default: "/usr/bin/perl")
+
+        Set shebang line/path.
 
     *   squish => *bool* (default: 0)
 

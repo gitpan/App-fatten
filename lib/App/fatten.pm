@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-11-13'; # DATE
-our $VERSION = '0.15'; # VERSION
+our $DATE = '2014-11-14'; # DATE
+our $VERSION = '0.16'; # VERSION
 
 use 5.010001;
 use strict;
@@ -176,7 +176,10 @@ sub _pack {
     # default system perl. perhaps make this configurable in the future.
     {
         my $ct = read_file($self->{abs_output_file});
-        $ct =~ s{\A#!(.+)}{#!/usr/bin/perl};
+        my $shebang = $self->{shebang} // '#!/usr/bin/perl';
+        $shebang = "#!$shebang" unless $shebang =~ /^#!/;
+        $shebang =~ s/\R+//g;
+        $ct =~ s{\A#!(.+)}{$shebang};
         write_file($self->{abs_output_file}, $ct);
     }
 
@@ -324,6 +327,12 @@ or:
 
 _
             schema => ['array*' => of => 'str*'],
+        },
+
+        shebang => {
+            summary => 'Set shebang line/path',
+            schema => 'str*',
+            default => '/usr/bin/perl',
         },
 
         squish => {
@@ -490,7 +499,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.15 of App::fatten (from Perl distribution App-fatten), released on 2014-11-13.
+This document describes version 0.16 of App::fatten (from Perl distribution App-fatten), released on 2014-11-14.
 
 =head1 SYNOPSIS
 
@@ -591,6 +600,10 @@ Perl version to target, defaults to current running version.
 This is for determining which modules are considered core and should be skipped
 by default (when C<exclude_core> option is enabled). Different perl versions have
 different sets of core modules as well as different versions of the modules.
+
+=item * B<shebang> => I<str> (default: "/usr/bin/perl")
+
+Set shebang line/path.
 
 =item * B<squish> => I<bool> (default: 0)
 

@@ -2,8 +2,8 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.16 of App::fatten (from Perl
-    distribution App-fatten), released on 2014-11-14.
+    This document describes version 0.17 of App::fatten (from Perl
+    distribution App-fatten), released on 2014-11-20.
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.
@@ -41,7 +41,16 @@ FUNCTIONS
 
     *   exclude_core => *bool* (default: 1)
 
-        Whether to exclude core modules.
+        Exclude core modules.
+
+    *   exclude_dist => *array*
+
+        Exclude all modules of dist.
+
+        Just like the "exclude" option, but will exclude module as well as
+        other modules from the same distribution. Module name must be the
+        main module of the distribution. Will determine other modules from
+        the ".packlist" file.
 
     *   exclude_pattern => *array*
 
@@ -59,7 +68,7 @@ FUNCTIONS
 
     *   include_dist => *array*
 
-        Include extra modules.
+        Include all modules of dist.
 
         Just like the "include" option, but will include module as well as
         other modules from the same distribution. Module name must be the
@@ -116,11 +125,11 @@ FUNCTIONS
 
     *   stripper_comment => *bool* (default: 1)
 
-        Will be passed to Perl::Stripper's strip_comment.
+        Set strip_comment=1 (strip comments) in Perl::Stripper.
 
     *   stripper_log => *bool* (default: 0)
 
-        Will be passed to Perl::Stripper's strip_log.
+        Set strip_log=1 (strip log statements) in Perl::Stripper.
 
     *   stripper_maintain_linum => *bool* (default: 0)
 
@@ -128,11 +137,11 @@ FUNCTIONS
 
     *   stripper_pod => *bool* (default: 1)
 
-        Will be passed to Perl::Stripper's strip_pod.
+        Set strip_pod=1 (strip POD) in Perl::Stripper.
 
     *   stripper_ws => *bool* (default: 1)
 
-        Will be passed to Perl::Stripper's strip_ws.
+        Set strip_ws=1 (strip whitespace) in Perl::Stripper.
 
     *   trace_method => *str* (default: "fatpacker")
 

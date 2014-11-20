@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-11-14'; # DATE
-our $VERSION = '0.16'; # VERSION
+our $DATE = '2014-11-20'; # DATE
+our $VERSION = '0.17'; # VERSION
 
 use 5.010001;
 use strict;
@@ -92,16 +92,29 @@ sub _build_lib {
     @mods = uniq(@mods);
 
     # filter excluded
+    my $excluded_distmods;
     my @fmods;
   MOD:
     for my $mod (@mods) {
         if ($self->{exclude} && $mod ~~ @{ $self->{exclude} }) {
             $log->infof("Excluding %s: skipped", $mod);
-            next;
+            next MOD;
         }
         for (@{ $self->{exclude_pattern} // [] }) {
             if ($mod ~~ /$_/) {
                 $log->infof("Excluding %s: skipped by pattern %s", $mod, $_);
+                next MOD;
+            }
+        }
+        if ($self->{exclude_dist}) {
+            if (!$excluded_distmods) {
+                $excluded_distmods = [];
+                for (@{ $self->{exclude_dist} }) {
+                    push @$excluded_distmods, list_dist_modules($_);
+                }
+            }
+            if ($mod ~~ @$excluded_distmods) {
+                $log->infof("Excluding %s (by dist): skipped", $mod);
                 next MOD;
             }
         }
@@ -237,7 +250,7 @@ _
             cmdline_aliases => { I => {} },
         },
         include_dist => {
-            summary => 'Include extra modules',
+            summary => 'Include all modules of dist',
             description => <<'_',
 
 Just like the `include` option, but will include module as well as other modules
@@ -268,8 +281,21 @@ _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { p => {} },
         },
+        exclude_dist => {
+            summary => 'Exclude all modules of dist',
+            description => <<'_',
+
+Just like the `exclude` option, but will exclude module as well as other modules
+from the same distribution. Module name must be the main module of the
+distribution. Will determine other modules from the `.packlist` file.
+
+_
+            schema => ['array*' => of => 'str*'],
+            cmdline_aliases => {},
+        },
         exclude_core => {
-            summary => 'Whether to exclude core modules',
+            summary => 'Exclude core modules',
+            'summary.alt.neg' => 'Do not exclude core modules',
             schema => ['bool' => default => 1],
         },
         perl_version => {
@@ -355,22 +381,26 @@ _
             default => 0,
         },
         stripper_ws => {
-            summary => "Will be passed to Perl::Stripper's strip_ws",
+            summary => "Set strip_ws=1 (strip whitespace) in Perl::Stripper",
+            'summary.alt.neg' => "Set strip_ws=0 (don't strip whitespace) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
         },
         stripper_comment => {
-            summary => "Will be passed to Perl::Stripper's strip_comment",
+            summary => "Set strip_comment=1 (strip comments) in Perl::Stripper",
+            'summary.alt.neg' => "Set strip_comment=0 (don't strip comments) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
         },
         stripper_pod => {
-            summary => "Will be passed to Perl::Stripper's strip_pod",
+            summary => "Set strip_pod=1 (strip POD) in Perl::Stripper",
+            'summary.alt.neg' => "Set strip_pod=0 (don't strip POD) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
         },
         stripper_log => {
-            summary => "Will be passed to Perl::Stripper's strip_log",
+            summary => "Set strip_log=1 (strip log statements) in Perl::Stripper",
+            'summary.alt.neg' => "Set strip_log=0 (don't strip log statements) in Perl::Stripper",
             schema => ['bool'],
             default => 0,
         },
@@ -499,7 +529,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.16 of App::fatten (from Perl distribution App-fatten), released on 2014-11-14.
+This document describes version 0.17 of App::fatten (from Perl distribution App-fatten), released on 2014-11-20.
 
 =head1 SYNOPSIS
 
@@ -548,7 +578,15 @@ When you don't want to include a module, specify it here.
 
 =item * B<exclude_core> => I<bool> (default: 1)
 
-Whether to exclude core modules.
+Exclude core modules.
+
+=item * B<exclude_dist> => I<array>
+
+Exclude all modules of dist.
+
+Just like the C<exclude> option, but will exclude module as well as other modules
+from the same distribution. Module name must be the main module of the
+distribution. Will determine other modules from the C<.packlist> file.
 
 =item * B<exclude_pattern> => I<array>
 
@@ -565,7 +603,7 @@ here.
 
 =item * B<include_dist> => I<array>
 
-Include extra modules.
+Include all modules of dist.
 
 Just like the C<include> option, but will include module as well as other modules
 from the same distribution. Module name must be the main module of the
@@ -619,11 +657,11 @@ Whether to strip included modules using Perl::Stripper.
 
 =item * B<stripper_comment> => I<bool> (default: 1)
 
-Will be passed to Perl::Stripper's strip_comment.
+Set strip_comment=1 (strip comments) in Perl::Stripper.
 
 =item * B<stripper_log> => I<bool> (default: 0)
 
-Will be passed to Perl::Stripper's strip_log.
+Set strip_log=1 (strip log statements) in Perl::Stripper.
 
 =item * B<stripper_maintain_linum> => I<bool> (default: 0)
 
@@ -631,11 +669,11 @@ Will be passed to Perl::Stripper's maintain_linum.
 
 =item * B<stripper_pod> => I<bool> (default: 1)
 
-Will be passed to Perl::Stripper's strip_pod.
+Set strip_pod=1 (strip POD) in Perl::Stripper.
 
 =item * B<stripper_ws> => I<bool> (default: 1)
 
-Will be passed to Perl::Stripper's strip_ws.
+Set strip_ws=1 (strip whitespace) in Perl::Stripper.
 
 =item * B<trace_method> => I<str> (default: "fatpacker")
 

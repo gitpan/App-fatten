@@ -2,7 +2,7 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.18 of App::fatten (from Perl
+    This document describes version 0.19 of App::fatten (from Perl
     distribution App-fatten), released on 2014-11-21.
 
 SYNOPSIS

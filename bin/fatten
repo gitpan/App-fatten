@@ -1,7 +1,7 @@
 #!perl
 
 our $DATE = '2014-11-21'; # DATE
-our $VERSION = '0.18'; # VERSION
+our $VERSION = '0.19'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.18 of fatten (from Perl distribution App-fatten), released on 2014-11-21.
+This document describes version 0.19 of fatten (from Perl distribution App-fatten), released on 2014-11-21.
 
 =head1 SYNOPSIS
 
@@ -170,16 +170,7 @@ Show program version.
 
 Script arguments (JSON-encoded).
 
-Will be used when running your script, e.g. when `trace_method` is `require`.
-For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
-then you can either use:
-
-    % fatten script output --args --foo --args 2 --args "bar baz"
-
-or:
-
-    % fatten script output --args-json '["--foo",2,"bar baz"]'
-
+See C<--args=s@>.
 
 =item B<--args>=I<s@>
 
@@ -196,6 +187,8 @@ or:
     % fatten script output --args-json '["--foo",2,"bar baz"]'
 
 
+Can be specified multiple times.
+
 =item B<--debug-keep-tempdir>
 
 Keep temporary directory for debugging.
@@ -204,10 +197,7 @@ Keep temporary directory for debugging.
 
 Exclude all modules of dist (JSON-encoded).
 
-Just like the `exclude` option, but will exclude module as well as other modules
-from the same distribution. Module name must be the main module of the
-distribution. Will determine other modules from the `.packlist` file.
-
+See C<--exclude-dist=s@>.
 
 =item B<--exclude-dist>=I<s@>
 
@@ -218,19 +208,19 @@ from the same distribution. Module name must be the main module of the
 distribution. Will determine other modules from the `.packlist` file.
 
 
+Can be specified multiple times.
+
 =item B<--exclude-json>=I<s>, B<-E>
 
 Modules to exclude (JSON-encoded).
 
-When you don't want to include a module, specify it here.
-
+See C<--exclude=s@>.
 
 =item B<--exclude-pattern-json>=I<s>, B<-p>
 
 Regex patterns of modules to exclude (JSON-encoded).
 
-When you don't want to include a pattern of modules, specify it here.
-
+See C<--exclude-pattern=s@>.
 
 =item B<--exclude-pattern>=I<s@>
 
@@ -239,6 +229,8 @@ Regex patterns of modules to exclude.
 When you don't want to include a pattern of modules, specify it here.
 
 
+Can be specified multiple times.
+
 =item B<--exclude>=I<s@>
 
 Modules to exclude.
@@ -246,14 +238,13 @@ Modules to exclude.
 When you don't want to include a module, specify it here.
 
 
+Can be specified multiple times.
+
 =item B<--include-dist-json>=I<s>
 
 Include all modules of dist (JSON-encoded).
 
-Just like the `include` option, but will include module as well as other modules
-from the same distribution. Module name must be the main module of the
-distribution. Will determine other modules from the `.packlist` file.
-
+See C<--include-dist=s@>.
 
 =item B<--include-dist>=I<s@>
 
@@ -264,13 +255,13 @@ from the same distribution. Module name must be the main module of the
 distribution. Will determine other modules from the `.packlist` file.
 
 
+Can be specified multiple times.
+
 =item B<--include-json>=I<s>, B<-I>
 
 Include extra modules (JSON-encoded).
 
-When the tracing process fails to include a required module, you can add it
-here.
-
+See C<--include=s@>.
 
 =item B<--include>=I<s@>
 
@@ -279,6 +270,8 @@ Include extra modules.
 When the tracing process fails to include a required module, you can add it
 here.
 
+
+Can be specified multiple times.
 
 =item B<--input-file>=I<s>, B<-i>
 
@@ -379,9 +372,7 @@ several methods available, please see `App::tracepm` for more details.
 
 Additional modules to "use" (JSON-encoded).
 
-Will be passed to the tracer. Will currently only affect the `fatpacker` and
-`require` methods (because those methods actually run your script).
-
+See C<--use=s@>.
 
 =item B<--use>=I<s@>
 
@@ -390,6 +381,8 @@ Additional modules to "use".
 Will be passed to the tracer. Will currently only affect the `fatpacker` and
 `require` methods (because those methods actually run your script).
 
+
+Can be specified multiple times.
 
 =back
 

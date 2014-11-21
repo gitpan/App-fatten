@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-11-20'; # DATE
-our $VERSION = '0.17'; # VERSION
+our $DATE = '2014-11-21'; # DATE
+our $VERSION = '0.18'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.17 of fatten (from Perl distribution App-fatten), released on 2014-11-20.
+This document describes version 0.18 of fatten (from Perl distribution App-fatten), released on 2014-11-21.
 
 =head1 SYNOPSIS
 
@@ -103,6 +103,301 @@ Like an option to strip/squish the module source codes with L<Perl::Strip>
 See L</"CONFIGURATION FILE"> for more details.
 
 =back
+
+=head1 OPTIONS
+
+C<*> marks required options.
+
+=head2 Common options
+
+=over
+
+=item B<--config-path>=I<s>
+
+Set path to configuration file.
+
+=item B<--config-profile>=I<s>
+
+Set configuration profile to use.
+
+=item B<--debug>
+
+Set log level to 'debug'.
+
+=item B<--format>=I<s>
+
+Set output format.
+
+=item B<--help>, B<-h>, B<-?>
+
+Show help message.
+
+=item B<--json>
+
+Set output format to json.
+
+=item B<--log-level>=I<s>
+
+Set log level.
+
+=item B<--no-config>
+
+Do not use any configuration file.
+
+=item B<--quiet>
+
+Set log level to 'error'.
+
+=item B<--trace>
+
+Set log level to 'trace'.
+
+=item B<--verbose>
+
+Set log level to 'info'.
+
+=item B<--version>, B<-v>
+
+Show program version.
+
+=back
+
+=head2 Options
+
+=over
+
+=item B<--args-json>=I<s>
+
+Script arguments (JSON-encoded).
+
+Will be used when running your script, e.g. when `trace_method` is `require`.
+For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
+then you can either use:
+
+    % fatten script output --args --foo --args 2 --args "bar baz"
+
+or:
+
+    % fatten script output --args-json '["--foo",2,"bar baz"]'
+
+
+=item B<--args>=I<s@>
+
+Script arguments.
+
+Will be used when running your script, e.g. when `trace_method` is `require`.
+For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
+then you can either use:
+
+    % fatten script output --args --foo --args 2 --args "bar baz"
+
+or:
+
+    % fatten script output --args-json '["--foo",2,"bar baz"]'
+
+
+=item B<--debug-keep-tempdir>
+
+Keep temporary directory for debugging.
+
+=item B<--exclude-dist-json>=I<s>
+
+Exclude all modules of dist (JSON-encoded).
+
+Just like the `exclude` option, but will exclude module as well as other modules
+from the same distribution. Module name must be the main module of the
+distribution. Will determine other modules from the `.packlist` file.
+
+
+=item B<--exclude-dist>=I<s@>
+
+Exclude all modules of dist.
+
+Just like the `exclude` option, but will exclude module as well as other modules
+from the same distribution. Module name must be the main module of the
+distribution. Will determine other modules from the `.packlist` file.
+
+
+=item B<--exclude-json>=I<s>, B<-E>
+
+Modules to exclude (JSON-encoded).
+
+When you don't want to include a module, specify it here.
+
+
+=item B<--exclude-pattern-json>=I<s>, B<-p>
+
+Regex patterns of modules to exclude (JSON-encoded).
+
+When you don't want to include a pattern of modules, specify it here.
+
+
+=item B<--exclude-pattern>=I<s@>
+
+Regex patterns of modules to exclude.
+
+When you don't want to include a pattern of modules, specify it here.
+
+
+=item B<--exclude>=I<s@>
+
+Modules to exclude.
+
+When you don't want to include a module, specify it here.
+
+
+=item B<--include-dist-json>=I<s>
+
+Include all modules of dist (JSON-encoded).
+
+Just like the `include` option, but will include module as well as other modules
+from the same distribution. Module name must be the main module of the
+distribution. Will determine other modules from the `.packlist` file.
+
+
+=item B<--include-dist>=I<s@>
+
+Include all modules of dist.
+
+Just like the `include` option, but will include module as well as other modules
+from the same distribution. Module name must be the main module of the
+distribution. Will determine other modules from the `.packlist` file.
+
+
+=item B<--include-json>=I<s>, B<-I>
+
+Include extra modules (JSON-encoded).
+
+When the tracing process fails to include a required module, you can add it
+here.
+
+
+=item B<--include>=I<s@>
+
+Include extra modules.
+
+When the tracing process fails to include a required module, you can add it
+here.
+
+
+=item B<--input-file>=I<s>, B<-i>
+
+Path to input file (script to be fatpacked).
+
+Default value:
+
+ "-"
+
+`-` (or if unspecified) means to take from standard input (internally, a
+temporary file will be created to handle this).
+
+
+=item B<--no-exclude-core>
+
+Do not exclude core modules.
+
+=item B<--no-stripper-comment>
+
+Set strip_comment=0 (don't strip comments) in Perl::Stripper.
+
+=item B<--no-stripper-pod>
+
+Set strip_pod=0 (don't strip POD) in Perl::Stripper.
+
+=item B<--no-stripper-ws>
+
+Set strip_ws=0 (don't strip whitespace) in Perl::Stripper.
+
+=item B<--output-file>=I<s>, B<-o>
+
+Path to output file.
+
+If input is from stdin, then output defaults to stdout. You can also specify
+stdout by using `-`.
+
+Otherwise, defaults to `<script>.fatpack` in source directory. If source
+directory happens to be unwritable by the script, will try `<script>.fatpack` in
+current directory. If that fails too, will die.
+
+
+=item B<--overwrite>
+
+Whether to overwrite output if previously exists.
+
+=item B<--perl-version>=I<s>, B<-V>
+
+Perl version to target, defaults to current running version.
+
+This is for determining which modules are considered core and should be skipped
+by default (when `exclude_core` option is enabled). Different perl versions have
+different sets of core modules as well as different versions of the modules.
+
+
+=item B<--shebang>=I<s>
+
+Set shebang line/path.
+
+Default value:
+
+ "/usr/bin/perl"
+
+=item B<--squish>
+
+Whether to squish included modules using Perl::Squish.
+
+=item B<--strip>
+
+Whether to strip included modules using Perl::Strip.
+
+=item B<--stripper>
+
+Whether to strip included modules using Perl::Stripper.
+
+=item B<--stripper-log>
+
+Set strip_log=1 (strip log statements) in Perl::Stripper.
+
+=item B<--stripper-maintain-linum>
+
+Will be passed to Perl::Stripper's maintain_linum.
+
+=item B<--trace-method>=I<s>, B<-t>
+
+Which method to use to trace dependencies.
+
+Default value:
+
+ "fatpacker"
+
+The default is `fatpacker`, which is the same as what `fatpack trace` does.
+Different tracing methods have different pro's and con's, one method might
+detect required modules that another method does not, and vice versa. There are
+several methods available, please see `App::tracepm` for more details.
+
+
+=item B<--use-json>=I<s>
+
+Additional modules to "use" (JSON-encoded).
+
+Will be passed to the tracer. Will currently only affect the `fatpacker` and
+`require` methods (because those methods actually run your script).
+
+
+=item B<--use>=I<s@>
+
+Additional modules to "use".
+
+Will be passed to the tracer. Will currently only affect the `fatpacker` and
+`require` methods (because those methods actually run your script).
+
+
+=back
+
+=head1 FILES
+
+B</etc/fatten.conf>
+
+B<~/fatten.conf>
 
 =head1 CONFIGURATION FILE
 

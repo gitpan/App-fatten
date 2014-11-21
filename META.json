@@ -68,7 +68,7 @@
          "web" : "https://github.com/perlancar/perl-App-fatten"
       }
    },
-   "version" : "0.17",
+   "version" : "0.18",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -249,9 +249,9 @@
                         "version" : "4.006"
                      },
                      {
-                        "class" : "Pod::Weaver::Plugin::Perinci",
-                        "name" : "@Author::PERLANCAR/Perinci",
-                        "version" : "0.15"
+                        "class" : "Pod::Weaver::Plugin::Rinci",
+                        "name" : "@Author::PERLANCAR/Rinci",
+                        "version" : "0.17"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Leftovers",

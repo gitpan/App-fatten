@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-11-20'; # DATE
-our $VERSION = '0.17'; # VERSION
+our $DATE = '2014-11-21'; # DATE
+our $VERSION = '0.18'; # VERSION
 
 use 5.010001;
 use strict;
@@ -529,7 +529,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.17 of App::fatten (from Perl distribution App-fatten), released on 2014-11-20.
+This document describes version 0.18 of App::fatten (from Perl distribution App-fatten), released on 2014-11-21.
 
 =head1 SYNOPSIS
 

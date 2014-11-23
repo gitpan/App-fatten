@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-11-21'; # DATE
-our $VERSION = '0.19'; # VERSION
+our $DATE = '2014-11-23'; # DATE
+our $VERSION = '0.20'; # VERSION
 
 use 5.010001;
 use strict;
@@ -10,6 +10,7 @@ use experimental 'smartmatch';
 use Log::Any '$log';
 BEGIN { no warnings; $main::Log_Level = 'info' }
 
+use App::tracepm;
 use Cwd qw(abs_path);
 use File::chdir;
 use File::Copy;
@@ -32,8 +33,6 @@ sub _sq { shell_quote($_[0]) }
 our %SPEC;
 
 sub _trace {
-    require App::tracepm;
-
     my $self = shift;
 
     $log->debugf("  Tracing with method '%s' ...", $self->{trace_method});
@@ -205,6 +204,33 @@ sub new {
     bless { @_ }, $class;
 }
 
+my $trace_methods;
+{
+    my $sch = $App::tracepm::SPEC{tracepm}{args}{method}{schema};
+    # XXX should've normalized schema
+    if (ref($sch->[1]) eq 'HASH') {
+        $trace_methods = $sch->[1]{in};
+    } else {
+        $trace_methods = $sch->[2];
+    }
+}
+
+my $_comp_module = sub {
+    my %args = @_;
+    require Complete::Module;
+    my $sep;
+    if ($args{word} =~ m!::!) {
+        $sep = '::';
+    } else {
+        $sep = '/';
+    }
+    Complete::Module::complete_module(
+        word => $args{word}, ci => 1,
+        find_pod => 0, find_pmc => 0,
+        separator => $sep,
+    );
+};
+
 $SPEC{fatten} = {
     v => 1.1,
     summary => 'Pack your dependencies onto your script file',
@@ -237,6 +263,7 @@ _
             schema => ['str*'],
             cmdline_aliases => { o=>{} },
             pos => 1,
+            tags => ['category:output'],
         },
         include => {
             summary => 'Include extra modules',
@@ -248,6 +275,8 @@ here.
 _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { I => {} },
+            tags => ['category:module-selection'],
+            element_completion => $_comp_module,
         },
         include_dist => {
             summary => 'Include all modules of dist',
@@ -260,6 +289,8 @@ distribution. Will determine other modules from the `.packlist` file.
 _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => {},
+            tags => ['category:module-selection'],
+            element_completion => $_comp_module, # XXX complete distnames?
         },
         exclude => {
             summary => 'Modules to exclude',
@@ -270,6 +301,8 @@ When you don't want to include a module, specify it here.
 _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { E => {} },
+            tags => ['category:module-selection'],
+            element_completion => $_comp_module, # XXX complete distnames?
         },
         exclude_pattern => {
             summary => 'Regex patterns of modules to exclude',
@@ -280,6 +313,7 @@ When you don't want to include a pattern of modules, specify it here.
 _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { p => {} },
+            tags => ['category:module-selection'],
         },
         exclude_dist => {
             summary => 'Exclude all modules of dist',
@@ -292,11 +326,14 @@ distribution. Will determine other modules from the `.packlist` file.
 _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => {},
+            tags => ['category:module-selection'],
+            element_completion => $_comp_module, # XXX complete distnames?
         },
         exclude_core => {
             summary => 'Exclude core modules',
             'summary.alt.neg' => 'Do not exclude core modules',
             schema => ['bool' => default => 1],
+            tags => ['category:module-selection'],
         },
         perl_version => {
             summary => 'Perl version to target, defaults to current running version',
@@ -309,14 +346,20 @@ different sets of core modules as well as different versions of the modules.
 _
             schema => ['str*'],
             cmdline_aliases => { V=>{} },
+            # XXX completion: list of known perl versions by Module::CoreList?
         },
+
         overwrite => {
             schema => [bool => default => 0],
             summary => 'Whether to overwrite output if previously exists',
+            tags => ['category:output'],
         },
         trace_method => {
             summary => "Which method to use to trace dependencies",
-            schema => ['str*', default => 'fatpacker'],
+            schema => ['str*', {
+                default => 'fatpacker',
+                in=>$trace_methods,
+            }],
             description => <<'_',
 
 The default is `fatpacker`, which is the same as what `fatpack trace` does.
@@ -326,6 +369,7 @@ several methods available, please see `App::tracepm` for more details.
 
 _
             cmdline_aliases => { t=>{} },
+            tags => ['category:module-selection'],
         },
         use => {
             summary => 'Additional modules to "use"',
@@ -336,6 +380,8 @@ Will be passed to the tracer. Will currently only affect the `fatpacker` and
 `require` methods (because those methods actually run your script).
 
 _
+            tags => ['category:module-selection'],
+            element_completion => $_comp_module, # XXX complete distnames?
         },
         args => {
             summary => 'Script arguments',
@@ -364,51 +410,85 @@ _
         squish => {
             summary => 'Whether to squish included modules using Perl::Squish',
             schema => ['bool' => default=>0],
+            tags => ['category:stripping'],
         },
 
         strip => {
             summary => 'Whether to strip included modules using Perl::Strip',
             schema => ['bool' => default=>0],
+            tags => ['category:stripping'],
         },
 
         stripper => {
             summary => 'Whether to strip included modules using Perl::Stripper',
             schema => ['bool' => default=>0],
+            tags => ['category:stripping'],
         },
         stripper_maintain_linum => {
-            summary => "Will be passed to Perl::Stripper's maintain_linum",
+            summary => "Set maintain_linum=1 in Perl::Stripper",
             schema => ['bool'],
             default => 0,
+            tags => ['category:stripping'],
+            description => <<'_',
+
+Only relevant when stripping using Perl::Stripper.
+
+_
         },
         stripper_ws => {
             summary => "Set strip_ws=1 (strip whitespace) in Perl::Stripper",
             'summary.alt.neg' => "Set strip_ws=0 (don't strip whitespace) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
+            tags => ['category:stripping'],
+            description => <<'_',
+
+Only relevant when stripping using Perl::Stripper.
+
+_
         },
         stripper_comment => {
             summary => "Set strip_comment=1 (strip comments) in Perl::Stripper",
             'summary.alt.neg' => "Set strip_comment=0 (don't strip comments) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
+            description => <<'_',
+
+Only relevant when stripping using Perl::Stripper.
+
+_
+            tags => ['category:stripping'],
         },
         stripper_pod => {
             summary => "Set strip_pod=1 (strip POD) in Perl::Stripper",
             'summary.alt.neg' => "Set strip_pod=0 (don't strip POD) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
+            tags => ['category:stripping'],
+            description => <<'_',
+
+Only relevant when stripping using Perl::Stripper.
+
+_
         },
         stripper_log => {
             summary => "Set strip_log=1 (strip log statements) in Perl::Stripper",
             'summary.alt.neg' => "Set strip_log=0 (don't strip log statements) in Perl::Stripper",
             schema => ['bool'],
             default => 0,
+            tags => ['category:stripping'],
+            description => <<'_',
+
+Only relevant when stripping using Perl::Stripper.
+
+_
         },
         # XXX strip_log_levels
 
         debug_keep_tempdir => {
             summary => 'Keep temporary directory for debugging',
             schema => ['bool' => default=>0],
+            tags => ['category:debugging'],
         },
     },
     deps => {
@@ -422,6 +502,18 @@ sub fatten {
     my $tempdir = tempdir(CLEANUP => 0);
     $log->debugf("Created tempdir %s", $tempdir);
     $self->{tempdir} = $tempdir;
+
+    # for convenience of completion in bash, we allow / to separate namespace.
+    # we convert it back to :: here.
+    for (@{ $self->{exclude} // [] },
+         @{ $self->{exclude_dist} // [] },
+         @{ $self->{include} // [] },
+         @{ $self->{include_dist} // [] },
+         @{ $self->{use} // [] },
+     ) {
+        s!/!::!g;
+        s/\.pm\z//;
+    }
 
     # my understanding is that fatlib contains the stuffs beside the pure-perl
     # .pm files, and currently won't pack anyway.
@@ -529,7 +621,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.19 of App::fatten (from Perl distribution App-fatten), released on 2014-11-21.
+This document describes version 0.20 of App::fatten (from Perl distribution App-fatten), released on 2014-11-23.
 
 =head1 SYNOPSIS
 
@@ -659,21 +751,31 @@ Whether to strip included modules using Perl::Stripper.
 
 Set strip_comment=1 (strip comments) in Perl::Stripper.
 
+Only relevant when stripping using Perl::Stripper.
+
 =item * B<stripper_log> => I<bool> (default: 0)
 
 Set strip_log=1 (strip log statements) in Perl::Stripper.
 
+Only relevant when stripping using Perl::Stripper.
+
 =item * B<stripper_maintain_linum> => I<bool> (default: 0)
 
-Will be passed to Perl::Stripper's maintain_linum.
+Set maintain_linum=1 in Perl::Stripper.
+
+Only relevant when stripping using Perl::Stripper.
 
 =item * B<stripper_pod> => I<bool> (default: 1)
 
 Set strip_pod=1 (strip POD) in Perl::Stripper.
 
+Only relevant when stripping using Perl::Stripper.
+
 =item * B<stripper_ws> => I<bool> (default: 1)
 
 Set strip_ws=1 (strip whitespace) in Perl::Stripper.
+
+Only relevant when stripping using Perl::Stripper.
 
 =item * B<trace_method> => I<str> (default: "fatpacker")
 
@@ -714,7 +816,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 

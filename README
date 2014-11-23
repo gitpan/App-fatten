@@ -2,8 +2,8 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.19 of App::fatten (from Perl
-    distribution App-fatten), released on 2014-11-21.
+    This document describes version 0.20 of App::fatten (from Perl
+    distribution App-fatten), released on 2014-11-23.
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.
@@ -127,21 +127,31 @@ FUNCTIONS
 
         Set strip_comment=1 (strip comments) in Perl::Stripper.
 
+        Only relevant when stripping using Perl::Stripper.
+
     *   stripper_log => *bool* (default: 0)
 
         Set strip_log=1 (strip log statements) in Perl::Stripper.
 
+        Only relevant when stripping using Perl::Stripper.
+
     *   stripper_maintain_linum => *bool* (default: 0)
 
-        Will be passed to Perl::Stripper's maintain_linum.
+        Set maintain_linum=1 in Perl::Stripper.
+
+        Only relevant when stripping using Perl::Stripper.
 
     *   stripper_pod => *bool* (default: 1)
 
         Set strip_pod=1 (strip POD) in Perl::Stripper.
 
+        Only relevant when stripping using Perl::Stripper.
+
     *   stripper_ws => *bool* (default: 1)
 
         Set strip_ws=1 (strip whitespace) in Perl::Stripper.
+
+        Only relevant when stripping using Perl::Stripper.
 
     *   trace_method => *str* (default: "fatpacker")
 
@@ -179,7 +189,7 @@ HOMEPAGE
     <https://metacpan.org/release/App-fatten>.
 
 SOURCE
-    Source repository is at <https://github.com/perlancar/perl-App-fatten>.
+    Source repository is at <https://github.com/sharyanto/perl-App-fatten>.
 
 BUGS
     Please report any bugs or feature requests on the bugtracker website

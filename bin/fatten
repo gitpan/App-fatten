@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-11-21'; # DATE
-our $VERSION = '0.19'; # VERSION
+our $DATE = '2014-11-23'; # DATE
+our $VERSION = '0.20'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.19 of fatten (from Perl distribution App-fatten), released on 2014-11-21.
+This document describes version 0.20 of fatten (from Perl distribution App-fatten), released on 2014-11-23.
 
 =head1 SYNOPSIS
 
@@ -162,36 +162,19 @@ Show program version.
 
 =back
 
-=head2 Options
+=head2 Debugging options
 
 =over
-
-=item B<--args-json>=I<s>
-
-Script arguments (JSON-encoded).
-
-See C<--args=s@>.
-
-=item B<--args>=I<s@>
-
-Script arguments.
-
-Will be used when running your script, e.g. when `trace_method` is `require`.
-For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
-then you can either use:
-
-    % fatten script output --args --foo --args 2 --args "bar baz"
-
-or:
-
-    % fatten script output --args-json '["--foo",2,"bar baz"]'
-
-
-Can be specified multiple times.
 
 =item B<--debug-keep-tempdir>
 
 Keep temporary directory for debugging.
+
+=back
+
+=head2 Module-selection options
+
+=over
 
 =item B<--exclude-dist-json>=I<s>
 
@@ -273,86 +256,9 @@ here.
 
 Can be specified multiple times.
 
-=item B<--input-file>=I<s>, B<-i>
-
-Path to input file (script to be fatpacked).
-
-Default value:
-
- "-"
-
-`-` (or if unspecified) means to take from standard input (internally, a
-temporary file will be created to handle this).
-
-
 =item B<--no-exclude-core>
 
 Do not exclude core modules.
-
-=item B<--no-stripper-comment>
-
-Set strip_comment=0 (don't strip comments) in Perl::Stripper.
-
-=item B<--no-stripper-pod>
-
-Set strip_pod=0 (don't strip POD) in Perl::Stripper.
-
-=item B<--no-stripper-ws>
-
-Set strip_ws=0 (don't strip whitespace) in Perl::Stripper.
-
-=item B<--output-file>=I<s>, B<-o>
-
-Path to output file.
-
-If input is from stdin, then output defaults to stdout. You can also specify
-stdout by using `-`.
-
-Otherwise, defaults to `<script>.fatpack` in source directory. If source
-directory happens to be unwritable by the script, will try `<script>.fatpack` in
-current directory. If that fails too, will die.
-
-
-=item B<--overwrite>
-
-Whether to overwrite output if previously exists.
-
-=item B<--perl-version>=I<s>, B<-V>
-
-Perl version to target, defaults to current running version.
-
-This is for determining which modules are considered core and should be skipped
-by default (when `exclude_core` option is enabled). Different perl versions have
-different sets of core modules as well as different versions of the modules.
-
-
-=item B<--shebang>=I<s>
-
-Set shebang line/path.
-
-Default value:
-
- "/usr/bin/perl"
-
-=item B<--squish>
-
-Whether to squish included modules using Perl::Squish.
-
-=item B<--strip>
-
-Whether to strip included modules using Perl::Strip.
-
-=item B<--stripper>
-
-Whether to strip included modules using Perl::Stripper.
-
-=item B<--stripper-log>
-
-Set strip_log=1 (strip log statements) in Perl::Stripper.
-
-=item B<--stripper-maintain-linum>
-
-Will be passed to Perl::Stripper's maintain_linum.
 
 =item B<--trace-method>=I<s>, B<-t>
 
@@ -383,6 +289,139 @@ Will be passed to the tracer. Will currently only affect the `fatpacker` and
 
 
 Can be specified multiple times.
+
+=back
+
+=head2 Options
+
+=over
+
+=item B<--args-json>=I<s>
+
+Script arguments (JSON-encoded).
+
+See C<--args=s@>.
+
+=item B<--args>=I<s@>
+
+Script arguments.
+
+Will be used when running your script, e.g. when `trace_method` is `require`.
+For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
+then you can either use:
+
+    % fatten script output --args --foo --args 2 --args "bar baz"
+
+or:
+
+    % fatten script output --args-json '["--foo",2,"bar baz"]'
+
+
+Can be specified multiple times.
+
+=item B<--input-file>=I<s>, B<-i>
+
+Path to input file (script to be fatpacked).
+
+Default value:
+
+ "-"
+
+`-` (or if unspecified) means to take from standard input (internally, a
+temporary file will be created to handle this).
+
+
+=item B<--perl-version>=I<s>, B<-V>
+
+Perl version to target, defaults to current running version.
+
+This is for determining which modules are considered core and should be skipped
+by default (when `exclude_core` option is enabled). Different perl versions have
+different sets of core modules as well as different versions of the modules.
+
+
+=item B<--shebang>=I<s>
+
+Set shebang line/path.
+
+Default value:
+
+ "/usr/bin/perl"
+
+=back
+
+=head2 Output options
+
+=over
+
+=item B<--output-file>=I<s>, B<-o>
+
+Path to output file.
+
+If input is from stdin, then output defaults to stdout. You can also specify
+stdout by using `-`.
+
+Otherwise, defaults to `<script>.fatpack` in source directory. If source
+directory happens to be unwritable by the script, will try `<script>.fatpack` in
+current directory. If that fails too, will die.
+
+
+=item B<--overwrite>
+
+Whether to overwrite output if previously exists.
+
+=back
+
+=head2 Stripping options
+
+=over
+
+=item B<--no-stripper-comment>
+
+Set strip_comment=0 (don't strip comments) in Perl::Stripper.
+
+Only relevant when stripping using Perl::Stripper.
+
+
+=item B<--no-stripper-pod>
+
+Set strip_pod=0 (don't strip POD) in Perl::Stripper.
+
+Only relevant when stripping using Perl::Stripper.
+
+
+=item B<--no-stripper-ws>
+
+Set strip_ws=0 (don't strip whitespace) in Perl::Stripper.
+
+Only relevant when stripping using Perl::Stripper.
+
+
+=item B<--squish>
+
+Whether to squish included modules using Perl::Squish.
+
+=item B<--strip>
+
+Whether to strip included modules using Perl::Strip.
+
+=item B<--stripper>
+
+Whether to strip included modules using Perl::Stripper.
+
+=item B<--stripper-log>
+
+Set strip_log=1 (strip log statements) in Perl::Stripper.
+
+Only relevant when stripping using Perl::Stripper.
+
+
+=item B<--stripper-maintain-linum>
+
+Set maintain_linum=1 in Perl::Stripper.
+
+Only relevant when stripping using Perl::Stripper.
+
 
 =back
 
@@ -426,9 +465,11 @@ directory to extract stuffs).
 
 L<Perl::Stripper>
 
-=head1 BASH COMPLETION
+=head1 COMPLETION
 
-This script has bash completion capability.
+This script has shell tab completion capability with support for several shells.
+
+=head2 bash
 
 To activate bash completion for this script, put:
 
@@ -438,13 +479,31 @@ in your bash startup (e.g. C<~/.bashrc>). Your next shell session will then reco
 
 You can also install L<App::BashCompletionProg> which makes it easy to add completion for Perinci::CmdLine-based scripts. After you install the module and put C<. ~/.bash-complete-prog> (or C<. /etc/bash-complete-prog>), you can just run C<bash-completion-prog> and the C<complete> command will be added to your C<~/.bash-completion-prog>. Your next shell session will then recognize tab completion for the command.
 
+=head2 tcsh
+
+To activate tcsh completion for this script, put:
+
+ complete fatten 'p/*/`fatten`/'
+
+in your tcsh startup (e.g. C<~/.tcshrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
+
+=head2 zsh
+
+To activate zsh completion for this script, put:
+
+ _fatten() { read -l; local cl="$REPLY"; read -ln; local cp="$REPLY"; reply=(`COMP_LINE="$cl" COMP_POINT="$cp" fatten`) }
+
+ compctl -K _fatten fatten
+
+in your zsh startup (e.g. C<~/.zshrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
+
 =head1 HOMEPAGE
 
 Please visit the project's homepage at L<https://metacpan.org/release/App-fatten>.
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 

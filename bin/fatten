@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-11-23'; # DATE
-our $VERSION = '0.20'; # VERSION
+our $DATE = '2014-11-29'; # DATE
+our $VERSION = '0.21'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.20 of fatten (from Perl distribution App-fatten), released on 2014-11-23.
+This document describes version 0.21 of fatten (from Perl distribution App-fatten), released on 2014-11-29.
 
 =head1 SYNOPSIS
 
@@ -180,7 +180,7 @@ Keep temporary directory for debugging.
 
 Exclude all modules of dist (JSON-encoded).
 
-See C<--exclude-dist=s@>.
+See C<--exclude-dist>.
 
 =item B<--exclude-dist>=I<s@>
 
@@ -197,13 +197,13 @@ Can be specified multiple times.
 
 Modules to exclude (JSON-encoded).
 
-See C<--exclude=s@>.
+See C<--exclude>.
 
 =item B<--exclude-pattern-json>=I<s>, B<-p>
 
 Regex patterns of modules to exclude (JSON-encoded).
 
-See C<--exclude-pattern=s@>.
+See C<--exclude-pattern>.
 
 =item B<--exclude-pattern>=I<s@>
 
@@ -227,7 +227,7 @@ Can be specified multiple times.
 
 Include all modules of dist (JSON-encoded).
 
-See C<--include-dist=s@>.
+See C<--include-dist>.
 
 =item B<--include-dist>=I<s@>
 
@@ -244,7 +244,7 @@ Can be specified multiple times.
 
 Include extra modules (JSON-encoded).
 
-See C<--include=s@>.
+See C<--include>.
 
 =item B<--include>=I<s@>
 
@@ -268,6 +268,10 @@ Default value:
 
  "fatpacker"
 
+Valid values:
+
+ ["fatpacker", "require", "prereqscanner", "prereqscanner_lite", "prereqscanner_recurse", "prereqscanner_lite_recurse"]
+
 The default is `fatpacker`, which is the same as what `fatpack trace` does.
 Different tracing methods have different pro's and con's, one method might
 detect required modules that another method does not, and vice versa. There are
@@ -278,7 +282,7 @@ several methods available, please see `App::tracepm` for more details.
 
 Additional modules to "use" (JSON-encoded).
 
-See C<--use=s@>.
+See C<--use>.
 
 =item B<--use>=I<s@>
 
@@ -300,7 +304,7 @@ Can be specified multiple times.
 
 Script arguments (JSON-encoded).
 
-See C<--args=s@>.
+See C<--args>.
 
 =item B<--args>=I<s@>
 
@@ -478,6 +482,14 @@ To activate bash completion for this script, put:
 in your bash startup (e.g. C<~/.bashrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
 
 You can also install L<App::BashCompletionProg> which makes it easy to add completion for Perinci::CmdLine-based scripts. After you install the module and put C<. ~/.bash-complete-prog> (or C<. /etc/bash-complete-prog>), you can just run C<bash-completion-prog> and the C<complete> command will be added to your C<~/.bash-completion-prog>. Your next shell session will then recognize tab completion for the command.
+
+=head2 fish
+
+To activate fish completion for this script, execute:
+
+ begin; set -lx COMP_SHELL fish; set -lx COMP_MODE gen_command; fatten; end > $HOME/.config/fish/completions/fatten.fish
+
+Or if you want to install globally, you can instead write the generated script to C</etc/fish/completions/fatten.fish> or C</usr/share/fish/completions/fatten.fish>. The exact path might be different on your system. Please check your C<fish_complete_path> variable.
 
 =head2 tcsh
 

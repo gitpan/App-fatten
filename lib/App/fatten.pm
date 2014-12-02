@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-11-29'; # DATE
-our $VERSION = '0.21'; # VERSION
+our $DATE = '2014-12-02'; # DATE
+our $VERSION = '0.22'; # VERSION
 
 use 5.010001;
 use strict;
@@ -247,6 +247,7 @@ _
             default => '-',
             pos => 0,
             cmdline_aliases => { i=>{} },
+            'x.schema.entity' => 'filename',
         },
         output_file => {
             summary => 'Path to output file',
@@ -264,9 +265,11 @@ _
             cmdline_aliases => { o=>{} },
             pos => 1,
             tags => ['category:output'],
+            'x.schema.entity' => 'filename',
         },
         include => {
             summary => 'Include extra modules',
+            'summary.alt.numnoun.singular' => 'Include an extra module',
             description => <<'_',
 
 When the tracing process fails to include a required module, you can add it
@@ -277,6 +280,7 @@ _
             cmdline_aliases => { I => {} },
             tags => ['category:module-selection'],
             element_completion => $_comp_module,
+            'x.schema.entity' => 'modulename',
         },
         include_dist => {
             summary => 'Include all modules of dist',
@@ -291,9 +295,11 @@ _
             cmdline_aliases => {},
             tags => ['category:module-selection'],
             element_completion => $_comp_module, # XXX complete distnames?
+            'x.schema.entity' => 'modulename',
         },
         exclude => {
             summary => 'Modules to exclude',
+            'summary.alt.numnoun.singular' => 'Exclude a module',
             description => <<'_',
 
 When you don't want to include a module, specify it here.
@@ -303,9 +309,11 @@ _
             cmdline_aliases => { E => {} },
             tags => ['category:module-selection'],
             element_completion => $_comp_module, # XXX complete distnames?
+            'x.schema.entity' => 'modulename',
         },
         exclude_pattern => {
             summary => 'Regex patterns of modules to exclude',
+            'summary.alt.numnoun.singular' => 'Regex pattern of modules to exclude',
             description => <<'_',
 
 When you don't want to include a pattern of modules, specify it here.
@@ -314,6 +322,7 @@ _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { p => {} },
             tags => ['category:module-selection'],
+            'x.schema.entity' => 'modulename',
         },
         exclude_dist => {
             summary => 'Exclude all modules of dist',
@@ -328,10 +337,11 @@ _
             cmdline_aliases => {},
             tags => ['category:module-selection'],
             element_completion => $_comp_module, # XXX complete distnames?
+            'x.schema.entity' => 'modulename',
         },
         exclude_core => {
             summary => 'Exclude core modules',
-            'summary.alt.neg' => 'Do not exclude core modules',
+            'summary.alt.bool.not' => 'Do not exclude core modules',
             schema => ['bool' => default => 1],
             tags => ['category:module-selection'],
         },
@@ -373,6 +383,7 @@ _
         },
         use => {
             summary => 'Additional modules to "use"',
+            'summary.alt.numnoun.singular' => 'Additional module to "use"',
             schema => ['array*' => of => 'str*'],
             description => <<'_',
 
@@ -382,9 +393,11 @@ Will be passed to the tracer. Will currently only affect the `fatpacker` and
 _
             tags => ['category:module-selection'],
             element_completion => $_comp_module, # XXX complete distnames?
+            'x.schema.entity' => 'modulename',
         },
         args => {
             summary => 'Script arguments',
+            'summary.alt.numnoun.singular' => 'Script argument',
             description => <<'_',
 
 Will be used when running your script, e.g. when `trace_method` is `require`.
@@ -437,7 +450,7 @@ _
         },
         stripper_ws => {
             summary => "Set strip_ws=1 (strip whitespace) in Perl::Stripper",
-            'summary.alt.neg' => "Set strip_ws=0 (don't strip whitespace) in Perl::Stripper",
+            'summary.alt.bool.not' => "Set strip_ws=0 (don't strip whitespace) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
             tags => ['category:stripping'],
@@ -449,7 +462,7 @@ _
         },
         stripper_comment => {
             summary => "Set strip_comment=1 (strip comments) in Perl::Stripper",
-            'summary.alt.neg' => "Set strip_comment=0 (don't strip comments) in Perl::Stripper",
+            'summary.alt.bool.not' => "Set strip_comment=0 (don't strip comments) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
             description => <<'_',
@@ -461,7 +474,7 @@ _
         },
         stripper_pod => {
             summary => "Set strip_pod=1 (strip POD) in Perl::Stripper",
-            'summary.alt.neg' => "Set strip_pod=0 (don't strip POD) in Perl::Stripper",
+            'summary.alt.bool.not' => "Set strip_pod=0 (don't strip POD) in Perl::Stripper",
             schema => ['bool'],
             default => 1,
             tags => ['category:stripping'],
@@ -473,7 +486,7 @@ _
         },
         stripper_log => {
             summary => "Set strip_log=1 (strip log statements) in Perl::Stripper",
-            'summary.alt.neg' => "Set strip_log=0 (don't strip log statements) in Perl::Stripper",
+            'summary.alt.bool.not' => "Set strip_log=0 (don't strip log statements) in Perl::Stripper",
             schema => ['bool'],
             default => 0,
             tags => ['category:stripping'],
@@ -621,7 +634,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.21 of App::fatten (from Perl distribution App-fatten), released on 2014-11-29.
+This document describes version 0.22 of App::fatten (from Perl distribution App-fatten), released on 2014-12-02.
 
 =head1 SYNOPSIS
 

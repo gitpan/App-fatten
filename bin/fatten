@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-11-29'; # DATE
-our $VERSION = '0.21'; # VERSION
+our $DATE = '2014-12-02'; # DATE
+our $VERSION = '0.22'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.21 of fatten (from Perl distribution App-fatten), released on 2014-11-29.
+This document describes version 0.22 of fatten (from Perl distribution App-fatten), released on 2014-12-02.
 
 =head1 SYNOPSIS
 
@@ -116,6 +116,8 @@ C<*> marks required options.
 
 Set path to configuration file.
 
+Can be specified multiple times.
+
 =item B<--config-profile>=I<s>
 
 Set configuration profile to use.
@@ -176,13 +178,13 @@ Keep temporary directory for debugging.
 
 =over
 
-=item B<--exclude-dist-json>=I<s>
+=item B<--exclude-dist-json>=I<modulename>
 
 Exclude all modules of dist (JSON-encoded).
 
 See C<--exclude-dist>.
 
-=item B<--exclude-dist>=I<s@>
+=item B<--exclude-dist>=I<modulename>
 
 Exclude all modules of dist.
 
@@ -193,43 +195,43 @@ distribution. Will determine other modules from the `.packlist` file.
 
 Can be specified multiple times.
 
-=item B<--exclude-json>=I<s>, B<-E>
+=item B<--exclude-json>=I<modulename>, B<-E>
 
 Modules to exclude (JSON-encoded).
 
 See C<--exclude>.
 
-=item B<--exclude-pattern-json>=I<s>, B<-p>
+=item B<--exclude-pattern-json>=I<modulename>, B<-p>
 
 Regex patterns of modules to exclude (JSON-encoded).
 
 See C<--exclude-pattern>.
 
-=item B<--exclude-pattern>=I<s@>
+=item B<--exclude-pattern>=I<modulename>
 
-Regex patterns of modules to exclude.
+Regex pattern of modules to exclude.
 
 When you don't want to include a pattern of modules, specify it here.
 
 
 Can be specified multiple times.
 
-=item B<--exclude>=I<s@>
+=item B<--exclude>=I<modulename>
 
-Modules to exclude.
+Exclude a module.
 
 When you don't want to include a module, specify it here.
 
 
 Can be specified multiple times.
 
-=item B<--include-dist-json>=I<s>
+=item B<--include-dist-json>=I<modulename>
 
 Include all modules of dist (JSON-encoded).
 
 See C<--include-dist>.
 
-=item B<--include-dist>=I<s@>
+=item B<--include-dist>=I<modulename>
 
 Include all modules of dist.
 
@@ -240,15 +242,15 @@ distribution. Will determine other modules from the `.packlist` file.
 
 Can be specified multiple times.
 
-=item B<--include-json>=I<s>, B<-I>
+=item B<--include-json>=I<modulename>, B<-I>
 
 Include extra modules (JSON-encoded).
 
 See C<--include>.
 
-=item B<--include>=I<s@>
+=item B<--include>=I<modulename>
 
-Include extra modules.
+Include an extra module.
 
 When the tracing process fails to include a required module, you can add it
 here.
@@ -278,15 +280,15 @@ detect required modules that another method does not, and vice versa. There are
 several methods available, please see `App::tracepm` for more details.
 
 
-=item B<--use-json>=I<s>
+=item B<--use-json>=I<modulename>
 
 Additional modules to "use" (JSON-encoded).
 
 See C<--use>.
 
-=item B<--use>=I<s@>
+=item B<--use>=I<modulename>
 
-Additional modules to "use".
+Additional module to "use".
 
 Will be passed to the tracer. Will currently only affect the `fatpacker` and
 `require` methods (because those methods actually run your script).
@@ -308,7 +310,7 @@ See C<--args>.
 
 =item B<--args>=I<s@>
 
-Script arguments.
+Script argument.
 
 Will be used when running your script, e.g. when `trace_method` is `require`.
 For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
@@ -323,7 +325,7 @@ or:
 
 Can be specified multiple times.
 
-=item B<--input-file>=I<s>, B<-i>
+=item B<--input-file>=I<filename>, B<-i>
 
 Path to input file (script to be fatpacked).
 
@@ -358,7 +360,7 @@ Default value:
 
 =over
 
-=item B<--output-file>=I<s>, B<-o>
+=item B<--output-file>=I<filename>, B<-o>
 
 Path to output file.
 
@@ -503,7 +505,7 @@ in your tcsh startup (e.g. C<~/.tcshrc>). Your next shell session will then reco
 
 To activate zsh completion for this script, put:
 
- _fatten() { read -l; local cl="$REPLY"; read -ln; local cp="$REPLY"; reply=(`COMP_LINE="$cl" COMP_POINT="$cp" fatten`) }
+ _fatten() { read -l; local cl="$REPLY"; read -ln; local cp="$REPLY"; reply=(`COMP_SHELL=zsh COMP_LINE="$cl" COMP_POINT="$cp" fatten`) }
 
  compctl -K _fatten fatten
 

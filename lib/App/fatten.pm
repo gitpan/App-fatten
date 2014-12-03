@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-12-02'; # DATE
-our $VERSION = '0.22'; # VERSION
+our $DATE = '2014-12-03'; # DATE
+our $VERSION = '0.23'; # VERSION
 
 use 5.010001;
 use strict;
@@ -634,7 +634,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.22 of App::fatten (from Perl distribution App-fatten), released on 2014-12-02.
+This document describes version 0.23 of App::fatten (from Perl distribution App-fatten), released on 2014-12-03.
 
 =head1 SYNOPSIS
 
@@ -829,7 +829,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
+Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
 
 =head1 BUGS
 

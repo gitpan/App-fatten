@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-12-02'; # DATE
-our $VERSION = '0.22'; # VERSION
+our $DATE = '2014-12-03'; # DATE
+our $VERSION = '0.23'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,7 +29,7 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.22 of fatten (from Perl distribution App-fatten), released on 2014-12-02.
+This document describes version 0.23 of fatten (from Perl distribution App-fatten), released on 2014-12-03.
 
 =head1 SYNOPSIS
 
@@ -108,9 +108,42 @@ See L</"CONFIGURATION FILE"> for more details.
 
 C<*> marks required options.
 
-=head2 Common options
+=head2 Debugging options
 
 =over
+
+=item B<--debug-keep-tempdir>
+
+Keep temporary directory for debugging.
+
+=back
+
+=head2 General options
+
+=over
+
+=item B<--args-json>=I<s>
+
+Script arguments (JSON-encoded).
+
+See C<--args>.
+
+=item B<--args>=I<s@>
+
+Script argument.
+
+Will be used when running your script, e.g. when `trace_method` is `require`.
+For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
+then you can either use:
+
+    % fatten script output --args --foo --args 2 --args "bar baz"
+
+or:
+
+    % fatten script output --args-json '["--foo",2,"bar baz"]'
+
+
+Can be specified multiple times.
 
 =item B<--config-path>=I<s>
 
@@ -134,6 +167,18 @@ Set output format.
 
 Show help message.
 
+=item B<--input-file>=I<filename>, B<-i>
+
+Path to input file (script to be fatpacked).
+
+Default value:
+
+ "-"
+
+`-` (or if unspecified) means to take from standard input (internally, a
+temporary file will be created to handle this).
+
+
 =item B<--json>
 
 Set output format to json.
@@ -146,9 +191,26 @@ Set log level.
 
 Do not use any configuration file.
 
+=item B<--perl-version>=I<s>, B<-V>
+
+Perl version to target, defaults to current running version.
+
+This is for determining which modules are considered core and should be skipped
+by default (when `exclude_core` option is enabled). Different perl versions have
+different sets of core modules as well as different versions of the modules.
+
+
 =item B<--quiet>
 
 Set log level to 'error'.
+
+=item B<--shebang>=I<s>
+
+Set shebang line/path.
+
+Default value:
+
+ "/usr/bin/perl"
 
 =item B<--trace>
 
@@ -161,16 +223,6 @@ Set log level to 'info'.
 =item B<--version>, B<-v>
 
 Show program version.
-
-=back
-
-=head2 Debugging options
-
-=over
-
-=item B<--debug-keep-tempdir>
-
-Keep temporary directory for debugging.
 
 =back
 
@@ -295,64 +347,6 @@ Will be passed to the tracer. Will currently only affect the `fatpacker` and
 
 
 Can be specified multiple times.
-
-=back
-
-=head2 Options
-
-=over
-
-=item B<--args-json>=I<s>
-
-Script arguments (JSON-encoded).
-
-See C<--args>.
-
-=item B<--args>=I<s@>
-
-Script argument.
-
-Will be used when running your script, e.g. when `trace_method` is `require`.
-For example, if your script requires three arguments: `--foo`, `2`, `"bar baz"`
-then you can either use:
-
-    % fatten script output --args --foo --args 2 --args "bar baz"
-
-or:
-
-    % fatten script output --args-json '["--foo",2,"bar baz"]'
-
-
-Can be specified multiple times.
-
-=item B<--input-file>=I<filename>, B<-i>
-
-Path to input file (script to be fatpacked).
-
-Default value:
-
- "-"
-
-`-` (or if unspecified) means to take from standard input (internally, a
-temporary file will be created to handle this).
-
-
-=item B<--perl-version>=I<s>, B<-V>
-
-Perl version to target, defaults to current running version.
-
-This is for determining which modules are considered core and should be skipped
-by default (when `exclude_core` option is enabled). Different perl versions have
-different sets of core modules as well as different versions of the modules.
-
-
-=item B<--shebang>=I<s>
-
-Set shebang line/path.
-
-Default value:
-
- "/usr/bin/perl"
 
 =back
 
@@ -517,7 +511,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
+Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
 
 =head1 BUGS
 

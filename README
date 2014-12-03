@@ -2,8 +2,8 @@ NAME
     App::fatten - Pack your dependencies onto your script file
 
 VERSION
-    This document describes version 0.22 of App::fatten (from Perl
-    distribution App-fatten), released on 2014-12-02.
+    This document describes version 0.23 of App::fatten (from Perl
+    distribution App-fatten), released on 2014-12-03.
 
 SYNOPSIS
     This distribution provides command-line utility called fatten.
@@ -189,7 +189,7 @@ HOMEPAGE
     <https://metacpan.org/release/App-fatten>.
 
 SOURCE
-    Source repository is at <https://github.com/sharyanto/perl-App-fatten>.
+    Source repository is at <https://github.com/perlancar/perl-App-fatten>.
 
 BUGS
     Please report any bugs or feature requests on the bugtracker website

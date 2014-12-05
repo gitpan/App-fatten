@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-12-04'; # DATE
-our $VERSION = '0.24'; # VERSION
+our $DATE = '2014-12-05'; # DATE
+our $VERSION = '0.25'; # VERSION
 
 use 5.010001;
 use strict;
@@ -24,7 +24,7 @@ use List::Util qw(first);
 use Log::Any::For::Builtins qw(system my_qx);
 use Module::Path qw(module_path);
 use Proc::ChildError qw(explain_child_error);
-use SHARYANTO::File::Util qw(file_exists);
+use File::MoreUtil qw(file_exists);
 use String::ShellQuote;
 use version;
 
@@ -634,7 +634,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.24 of App::fatten (from Perl distribution App-fatten), released on 2014-12-04.
+This document describes version 0.25 of App::fatten (from Perl distribution App-fatten), released on 2014-12-05.
 
 =head1 SYNOPSIS
 
@@ -829,7 +829,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
+Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
 
 =head1 BUGS
 

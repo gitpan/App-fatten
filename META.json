@@ -16,7 +16,8 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "0"
+            "ExtUtils::MakeMaker" : "0",
+            "Perl::osnames" : "0.09"
          }
       },
       "develop" : {
@@ -30,7 +31,7 @@
       "runtime" : {
          "requires" : {
             "App::FatPacker" : "0",
-            "App::tracepm" : "0.07",
+            "App::tracepm" : "0.11",
             "Complete::Module" : "0",
             "Dist::Util" : "0",
             "File::MoreUtil" : "0",
@@ -69,7 +70,7 @@
          "web" : "https://github.com/perlancar/perl-App-fatten"
       }
    },
-   "version" : "0.25",
+   "version" : "0.26",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -162,6 +163,16 @@
             "version" : "5.025"
          },
          {
+            "class" : "Dist::Zilla::Plugin::Rinci::AbstractFromMeta",
+            "name" : "@Author::PERLANCAR/Rinci::AbstractFromMeta",
+            "version" : "0.06"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::PodnameFromFilename",
+            "name" : "@Author::PERLANCAR/PodnameFromFilename",
+            "version" : "0.01"
+         },
+         {
             "class" : "Dist::Zilla::Plugin::PERLANCAR::MetaResources",
             "name" : "@Author::PERLANCAR/PERLANCAR::MetaResources",
             "version" : "0.03"
@@ -187,14 +198,14 @@
             "version" : "5.025"
          },
          {
-            "class" : "Dist::Zilla::Plugin::Rinci::InstallCompletion",
-            "name" : "@Author::PERLANCAR/Rinci::InstallCompletion",
-            "version" : "0.03"
+            "class" : "Dist::Zilla::Plugin::GenShellCompletion",
+            "name" : "@Author::PERLANCAR/GenShellCompletion",
+            "version" : "0.07"
          },
          {
             "class" : "Dist::Zilla::Plugin::OurDate",
             "name" : "@Author::PERLANCAR/OurDate",
-            "version" : "0.01"
+            "version" : "0.02"
          },
          {
             "class" : "Dist::Zilla::Plugin::PodWeaver",
@@ -263,7 +274,7 @@
                      {
                         "class" : "Pod::Weaver::Plugin::Rinci",
                         "name" : "@Author::PERLANCAR/Rinci",
-                        "version" : "0.21"
+                        "version" : "0.25"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Leftovers",
@@ -278,12 +289,12 @@
                      {
                         "class" : "Pod::Weaver::Section::Completion::GetoptLongComplete",
                         "name" : "@Author::PERLANCAR/Completion::GetoptLongComplete",
-                        "version" : "0.04"
+                        "version" : "0.05"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Completion::PerinciCmdLine",
                         "name" : "@Author::PERLANCAR/Completion::PerinciCmdLine",
-                        "version" : "0.07"
+                        "version" : "0.08"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Homepage::DefaultCPAN",

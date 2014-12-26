@@ -28,7 +28,7 @@ requires:
   List::MoreUtils: '0'
   Log::Any: '0'
   Log::Any::For::Builtins: '0'
-  Module::Path: '0'
+  Module::Path::More: '0'
   Perinci::CmdLine::Lite: '0.49'
   Proc::ChildError: '0'
   Rinci: v1.1.0
@@ -39,7 +39,7 @@ resources:
   bugtracker: https://rt.cpan.org/Public/Dist/Display.html?Name=App-fatten
   homepage: https://metacpan.org/release/App-fatten
   repository: git://github.com/perlancar/perl-App-fatten.git
-version: '0.26'
+version: '0.27'
 x_Dist_Zilla:
   perl:
     version: '5.018002'

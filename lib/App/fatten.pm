@@ -1,7 +1,7 @@
 package App::fatten;
 
 our $DATE = '2014-12-26'; # DATE
-our $VERSION = '0.26'; # VERSION
+our $VERSION = '0.27'; # VERSION
 
 use 5.010001;
 use strict;
@@ -22,7 +22,7 @@ use File::Temp qw(tempfile tempdir);
 use List::MoreUtils qw(uniq);
 use List::Util qw(first);
 use Log::Any::For::Builtins qw(system my_qx);
-use Module::Path qw(module_path);
+use Module::Path::More qw(module_path);
 use Proc::ChildError qw(explain_child_error);
 use File::MoreUtil qw(file_exists);
 use String::ShellQuote;
@@ -59,8 +59,6 @@ sub _build_lib {
 
     my $totsize = 0;
     my $totfiles = 0;
-
-    local $CWD = "$tempdir/lib";
 
     my @mods; # modules to add
 
@@ -122,12 +120,15 @@ sub _build_lib {
     @mods = @fmods;
 
     for my $mod (@mods) {
-        my $mpath = module_path($mod) or die "Can't find path for $mod";
+        my $mpath = module_path(module=>$mod) or die "Can't find path for $mod";
 
         my $modp = $mod; $modp =~ s!::!/!g; $modp .= ".pm";
         my ($dir) = $modp =~ m!(.+)/(.+)!;
         if ($dir) {
-            make_path($dir) unless -d $dir;
+            my $dir_to_make = "$tempdir/lib/$dir";
+            unless (-d $dir_to_make) {
+                make_path($dir_to_make) or die "Can't make_path: $dir_to_make";
+            }
         }
 
         if ($self->{stripper}) {
@@ -144,22 +145,22 @@ sub _build_lib {
             $log->debug("  Stripping $mpath --> $modp ...");
             my $src = read_file($mpath);
             my $stripped = $stripper->strip($src);
-            write_file($modp, $stripped);
+            write_file("$tempdir/lib/$modp", $stripped);
         } elsif ($self->{strip}) {
             require Perl::Strip;
             my $strip = Perl::Strip->new;
             $log->debug("  Stripping $mpath --> $modp ...");
             my $src = read_file($mpath);
             my $stripped = $strip->strip($src);
-            write_file($modp, $stripped);
+            write_file("$tempdir/lib/$modp", $stripped);
         } elsif ($self->{squish}) {
             $log->debug("  Squishing $mpath --> $modp ...");
             require Perl::Squish;
             my $squish = Perl::Squish->new;
-            $squish->file($mpath, $modp);
+            $squish->file($mpath, "$tempdir/lib/$modp");
         } else {
-            $log->debug("  Copying $mpath --> $modp ...");
-            copy($mpath, $modp);
+            $log->debug("  Copying $mpath --> $tempdir/lib/$modp ...");
+            copy($mpath, "$tempdir/lib/$modp");
         }
 
         $totfiles++;
@@ -634,7 +635,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.26 of App::fatten (from Perl distribution App-fatten), released on 2014-12-26.
+This document describes version 0.27 of App::fatten (from Perl distribution App-fatten), released on 2014-12-26.
 
 =head1 SYNOPSIS
 

@@ -34,7 +34,7 @@ my %WriteMakefileArgs = (
     "List::MoreUtils" => 0,
     "Log::Any" => 0,
     "Log::Any::For::Builtins" => 0,
-    "Module::Path" => 0,
+    "Module::Path::More" => 0,
     "Perinci::CmdLine::Lite" => "0.49",
     "Proc::ChildError" => 0,
     "Rinci" => "1.1.0",
@@ -47,7 +47,7 @@ my %WriteMakefileArgs = (
     "IPC::Open3" => 0,
     "Test::More" => 0
   },
-  "VERSION" => "0.26",
+  "VERSION" => "0.27",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -69,7 +69,7 @@ my %FallbackPrereqs = (
   "List::MoreUtils" => 0,
   "Log::Any" => 0,
   "Log::Any::For::Builtins" => 0,
-  "Module::Path" => 0,
+  "Module::Path::More" => 0,
   "Perinci::CmdLine::Lite" => "0.49",
   "Perl::osnames" => "0.09",
   "Proc::ChildError" => 0,

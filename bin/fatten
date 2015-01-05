@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-12-26'; # DATE
-our $VERSION = '0.27'; # VERSION
+our $DATE = '2015-01-05'; # DATE
+our $VERSION = '0.28'; # VERSION
 
 use 5.010001;
 use strict;
@@ -29,19 +29,38 @@ fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.27 of fatten (from Perl distribution App-fatten), released on 2014-12-26.
+This document describes version 0.28 of fatten (from Perl distribution App-fatten), released on 2015-01-05.
 
 =head1 SYNOPSIS
 
- # by default outputs to '<script>.packed' in the source directory, or in
+Basic usage (input & output):
+
+ # by default outputs to '<script>.fatpack' in the source directory, or in
  # current directory if source directory is not writable.
  % fatten bin/script.pl
 
- # some options (set debug, set target perl version, add some modules, set
- # output)
- % fatten --debug -V 5.10.1 -I Foo::Bar -I Baz script.pl script.pl.packed
+ # specify output path
+ % fatten bin/script.pl -o /tmp/script.pl
 
- # see more options
+ # output to stdout
+ % fatten bin/script.pl -o -
+
+ # input from stdin (output will default to stdout, unless you give -o)
+ % download-perl-script | fatten
+
+ # see debug messages (what modules are being traced and included, etc)
+ % fatten --debug <script.pl >script.fatpack
+
+Including and excluding modules:
+
+ # add some more modules not detected by the tracer
+ % fatten -I Foo::Bar -I Foo::Baz bin/script.pl -o script.fatpack
+
+ # change trace method, usually 'require' will give pretty complete result
+ % fatten -t require <script.pl >script.fatpack
+
+See more options:
+
  % fatten --help
 
 =head1 DESCRIPTION
@@ -514,7 +533,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 
@@ -530,7 +549,7 @@ perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by perlancar@cpan.org.
+This software is copyright (c) 2015 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

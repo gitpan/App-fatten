@@ -1,7 +1,7 @@
 package App::fatten;
 
-our $DATE = '2014-12-26'; # DATE
-our $VERSION = '0.27'; # VERSION
+our $DATE = '2015-01-05'; # DATE
+our $VERSION = '0.28'; # VERSION
 
 use 5.010001;
 use strict;
@@ -216,22 +216,6 @@ my $trace_methods;
     }
 }
 
-my $_comp_module = sub {
-    my %args = @_;
-    require Complete::Module;
-    my $sep;
-    if ($args{word} =~ m!::!) {
-        $sep = '::';
-    } else {
-        $sep = '/';
-    }
-    Complete::Module::complete_module(
-        word => $args{word}, ci => 1,
-        find_pod => 0, find_pmc => 0,
-        separator => $sep,
-    );
-};
-
 $SPEC{fatten} = {
     v => 1.1,
     summary => 'Pack your dependencies onto your script file',
@@ -280,7 +264,11 @@ _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { I => {} },
             tags => ['category:module-selection'],
-            element_completion => $_comp_module,
+            element_completion => sub {
+                require Complete::Module;
+                my %args = @_;
+                Complete::Module::complete_module(word=>$args{word});
+            },
             'x.schema.entity' => 'modulename',
         },
         include_dist => {
@@ -295,7 +283,8 @@ _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => {},
             tags => ['category:module-selection'],
-            element_completion => $_comp_module, # XXX complete distnames?
+            element_completion => {
+            },
             'x.schema.entity' => 'modulename',
         },
         exclude => {
@@ -309,7 +298,11 @@ _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => { E => {} },
             tags => ['category:module-selection'],
-            element_completion => $_comp_module, # XXX complete distnames?
+            element_completion => sub {
+                require Complete::Module;
+                my %args = @_;
+                Complete::Module::complete_module(word=>$args{word});
+            },
             'x.schema.entity' => 'modulename',
         },
         exclude_pattern => {
@@ -337,7 +330,11 @@ _
             schema => ['array*' => of => 'str*'],
             cmdline_aliases => {},
             tags => ['category:module-selection'],
-            element_completion => $_comp_module, # XXX complete distnames?
+            element_completion => sub {
+                require Complete::Dist;
+                my %args = @_;
+                Complete::Dist::complete_dist(word=>$args{word});
+            },
             'x.schema.entity' => 'modulename',
         },
         exclude_core => {
@@ -393,7 +390,11 @@ Will be passed to the tracer. Will currently only affect the `fatpacker` and
 
 _
             tags => ['category:module-selection'],
-            element_completion => $_comp_module, # XXX complete distnames?
+            element_completion => sub {
+                require Complete::Module;
+                my %args = @_;
+                Complete::Module::complete_module(word=>$args{word});
+            },
             'x.schema.entity' => 'modulename',
         },
         args => {
@@ -635,7 +636,7 @@ App::fatten - Pack your dependencies onto your script file
 
 =head1 VERSION
 
-This document describes version 0.27 of App::fatten (from Perl distribution App-fatten), released on 2014-12-26.
+This document describes version 0.28 of App::fatten (from Perl distribution App-fatten), released on 2015-01-05.
 
 =head1 SYNOPSIS
 
@@ -658,7 +659,7 @@ Arguments ('*' denotes required arguments):
 
 =over 4
 
-=item * B<args> => I<array>
+=item * B<args> => I<array[str]>
 
 Script arguments.
 
@@ -676,7 +677,7 @@ or:
 
 Keep temporary directory for debugging.
 
-=item * B<exclude> => I<array>
+=item * B<exclude> => I<array[str]>
 
 Modules to exclude.
 
@@ -686,7 +687,7 @@ When you don't want to include a module, specify it here.
 
 Exclude core modules.
 
-=item * B<exclude_dist> => I<array>
+=item * B<exclude_dist> => I<array[str]>
 
 Exclude all modules of dist.
 
@@ -694,20 +695,20 @@ Just like the C<exclude> option, but will exclude module as well as other module
 from the same distribution. Module name must be the main module of the
 distribution. Will determine other modules from the C<.packlist> file.
 
-=item * B<exclude_pattern> => I<array>
+=item * B<exclude_pattern> => I<array[str]>
 
 Regex patterns of modules to exclude.
 
 When you don't want to include a pattern of modules, specify it here.
 
-=item * B<include> => I<array>
+=item * B<include> => I<array[str]>
 
 Include extra modules.
 
 When the tracing process fails to include a required module, you can add it
 here.
 
-=item * B<include_dist> => I<array>
+=item * B<include_dist> => I<array[str]>
 
 Include all modules of dist.
 
@@ -800,7 +801,7 @@ Different tracing methods have different pro's and con's, one method might
 detect required modules that another method does not, and vice versa. There are
 several methods available, please see C<App::tracepm> for more details.
 
-=item * B<use> => I<array>
+=item * B<use> => I<array[str]>
 
 Additional modules to "use".
 
@@ -808,8 +809,6 @@ Will be passed to the tracer. Will currently only affect the C<fatpacker> and
 C<require> methods (because those methods actually run your script).
 
 =back
-
-Return value:
 
 Returns an enveloped result (an array).
 
@@ -820,7 +819,7 @@ First element (status) is an integer containing HTTP status code
 element (meta) is called result metadata and is optional, a hash
 that contains extra information.
 
- (any)
+Return value:  (any)
 
 =for Pod::Coverage ^(new)$
 
@@ -830,7 +829,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 
@@ -846,7 +845,7 @@ perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by perlancar@cpan.org.
+This software is copyright (c) 2015 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

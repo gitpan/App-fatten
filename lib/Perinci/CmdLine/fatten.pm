@@ -1,7 +1,7 @@
 package Perinci::CmdLine::fatten;
 
-our $DATE = '2014-12-26'; # DATE
-our $VERSION = '0.27'; # VERSION
+our $DATE = '2015-01-05'; # DATE
+our $VERSION = '0.28'; # VERSION
 
 use 5.010;
 use parent qw(Perinci::CmdLine::Lite);
@@ -56,7 +56,7 @@ Perinci::CmdLine::fatten - Subclass of Perinci::CmdLine::Lite to set config_prof
 
 =head1 VERSION
 
-This document describes version 0.27 of Perinci::CmdLine::fatten (from Perl distribution App-fatten), released on 2014-12-26.
+This document describes version 0.28 of Perinci::CmdLine::fatten (from Perl distribution App-fatten), released on 2015-01-05.
 
 =head1 DESCRIPTION
 
@@ -69,7 +69,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/App-fatten
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/perlancar/perl-App-fatten>.
+Source repository is at L<https://github.com/sharyanto/perl-App-fatten>.
 
 =head1 BUGS
 
@@ -85,7 +85,7 @@ perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by perlancar@cpan.org.
+This software is copyright (c) 2015 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
